@@ -1,17 +1,32 @@
+import os
 import json
 
 import cv2
 import click
 import numpy as np
 
+import streamlit.cli
+
 import optcbx
 
 
-@click.command()
+@click.group()
+def main():
+    pass
+
+@main.command("streamlit")
+def streamlit_app():
+    dirname = os.path.dirname(__file__)
+    filename = os.path.join(dirname, 'app_st.py')
+    args = []
+    streamlit.cli._main_run(filename, args)
+
+
+@main.command("demo")
 @click.argument('screenshot', type=click.Path(dir_okay=False, exists=True))
 @click.option('--units', type=click.Path(file_okay=True, exists=True), 
               default='data/units.json')
-def main(screenshot: str, units: str):
+def demo(screenshot: str, units: str):
     im = cv2.imread(screenshot)
     image_size = 64
     
