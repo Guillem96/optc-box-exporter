@@ -7,26 +7,30 @@ import tqdm.auto as tqdm
 import cv2
 import numpy as np
 
-from square_detection import detect_characters
+from optcbx import detect_characters
+from optcbx.units import parse_units, Character
 
-image_size = 64
+
 _portraits_paths = None
 _portraits = None
 _units = None
+_units_ids = None
 
 FindCharactersResult = Union[List[int], Tuple[List[int], np.ndarray]]
 
 
-def find_characters_from_screenshot(screenshot: np.ndarray) -> List[Any]:
-    global _units
+def find_characters_from_screenshot(screenshot: np.ndarray) -> List[Character]:
+    global _units, _units_ids
 
     characters = detect_characters(screenshot)
     id_matches = find_characters_ids(characters)
 
     if _units is None:
         _units = json.load(open('data/units.json'))
-        _units = [_viable_unit(o) for o in _units]
+        _units = parse_units(_units)
+        _units_ids = np.array([o.number for o in _units])
 
+    id_matches = [(_units_ids == i).argmax() for i in id_matches]
     return [_units[i] for i in id_matches]
 
 
@@ -45,6 +49,8 @@ def find_characters_ids(
 
     best_matches = _top_similarities(characters, _portraits)
     ids = [int(_portraits_paths[i].stem) for i in best_matches]
+    
+
     if not return_portraits:
         return ids
     else:
@@ -65,47 +71,3 @@ def _top_similarities(characters, portraits):
     best_matches = np.argmax(-distances, -1)
     return best_matches.tolist()
 
-
-def _viable_unit(unit):
-    if all(o is not None for o in unit):
-        return unit
-    
-    if all(unit[i] is not None for i in range(9, 15)):
-        return unit
-
-    return []
-
-
-def main():
-    characters = detect_characters(
-        r'data\screenshots\Screenshot_20201014-155031.jpg', image_size)
-
-    id_matches, best_portraits = find_characters_ids(characters, True)
-
-    cols = 3
-    rows = characters.shape[0] // cols
-    demo_image = np.zeros((rows * image_size,
-                           image_size * cols * 2,
-                           3), dtype='uint8')
-
-    for i, c in enumerate(characters):
-        portrait_match = best_portraits[i]
-        row = i % rows
-        column = i % cols
-
-        start_h = row * image_size
-        end_h = start_h + image_size
-
-        start_w = column * image_size * 2
-        end_w = start_w + image_size
-
-        demo_image[start_h: end_h, start_w:end_w] = c
-        demo_image[start_h: end_h, end_w:end_w + image_size] = portrait_match
-
-    cv2.imshow('distances', demo_image)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
-
-
-if __name__ == "__main__":
-    main()
