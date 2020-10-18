@@ -1,14 +1,19 @@
 import os
 import sys
 import json
-import requests
 import shutil
+import requests
+import functools
+from pathlib import Path
 import multiprocessing as mp
 
+import click
 import tqdm.auto as tqdm
 
+from optcbx.units import viable_unit
 
-def get_portrait_url(cid):
+
+def get_portrait_url(cid: Optional[str]) -> str:
     if cid is None:
         return 'https://onepiece-treasurecruise.com/wp-content/themes/onepiece-treasurecruise/images/noimage.png'
     elif cid == '0742': 
@@ -684,25 +689,15 @@ def get_portrait_url(cid):
         return 'https://onepiece-treasurecruise.com/wp-content/uploads/f' + cid + '.png';
 
 
-def viable_unit(unit):
-    if all(o is not None for o in unit):
-        return unit
-    
-    if all(unit[i] is not None for i in range(9, 15)):
-        return unit
-
-    return []
-
-
 def generate_id(idx):
     idx = str(idx)
     padding = 4 - len(idx)
     return '0' * padding + idx
 
 
-def download_portrait(p):
+def download_portrait(p, out_path):
     cid, url = p
-    dst_path = f"data/Portrait/{cid}.png"
+    dst_path = str(out_path / f"{cid}.png")
 
     if url.startswith('../res'):
         url = url.replace('../res', 'https://optc-db.github.io/res')
@@ -715,20 +710,32 @@ def download_portrait(p):
     else:
         print("Error while downloading:", url)
 
+@click.command()
+@click.option('--units', type=click.Path(file_okay=True, exists=True), 
+              default='data/units.json')
+@click.option('--output', type=click.Path(file_okay=False), 
+              default='data/Portrait')
+def main(units: str, output: str):
+    output = Path(output)
+    output.mkdir(exist_ok=True, parents=True)
 
-if __name__ == "__main__":
-    units = json.load(open('data/units.json'))
+    units = json.load(open(units))
     units = [viable_unit(o) for o in units]
     portraits_urls = [(i, get_portrait_url(generate_id(i))) 
                       for i, u in enumerate(units, start=1) if u]
 
+    download_fn = functools.partial(download_portrait, out_path=output)
     p = mp.Pool(mp.cpu_count())
     try:
-        r = list(tqdm.tqdm(p.imap(download_portrait, portraits_urls), 
-                        total=len(portraits_urls)))
+        r = list(tqdm.tqdm(p.imap(download_fn, portraits_urls), 
+                           total=len(portraits_urls)))
         p.close()
     except:
         print ("You cancelled the program!")
         p.terminate()
         p.join()
         sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()
