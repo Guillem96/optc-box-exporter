@@ -31,7 +31,8 @@ def demo(screenshot: str, units: str):
     image_size = 64
     
     characters = optcbx.detect_characters(im, 64)
-    id_matches, best_portraits = optcbx.find_characters_ids(characters, True)
+    id_matches, best_portraits = optcbx.find_characters_ids(
+        characters, True, dist_method='mse')
 
     units = json.load(open(units))
     units = optcbx.units.parse_units(units)
@@ -45,14 +46,15 @@ def demo(screenshot: str, units: str):
     col_margin = image_size // 4
     rows, m = divmod(characters.shape[0], cols)
     rows += (m > 0)
+
     demo_image = np.zeros((rows * image_size,
                            image_size * cols * 2 + col_margin * (cols - 1),
                            3), dtype='uint8')
 
     for i, c in enumerate(characters):
         portrait_match = best_portraits[i]
-        row = i // rows
-        column =i % cols
+        row = i // cols
+        column = i % cols
 
         start_h = row * image_size
         end_h = start_h + image_size
