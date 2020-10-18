@@ -40,13 +40,22 @@ computation time.
 im_size = st.slider("Image size", min_value=32, max_value=128, value=64, step=2, 
                     format="%d")
 
+"""
+Method to find the closest character. SSIM gives better results but it is slower
+than MSE.
+"""
+dist_method = st.radio("Distance method", ('SSIM', 'MSE'), index=1)
+
 im = st.file_uploader("Select a character box screenshot")
 if im is not None:
     with st.spinner(text='Analyzing your character box... This may take a while'):
         im = np.array(Image.open(im))[..., ::-1]
 
         characters, thumbnails = optcbx.find_characters_from_screenshot(
-            im, return_thumbnails=True, image_size=im_size)
+            im, 
+            return_thumbnails=True, 
+            dist_method=dist_method.lower(),
+            image_size=im_size)
         thumbnails = thumbnails[...,::-1]
 
     st.success(f"Found {len(characters)} characters in your box")
@@ -55,5 +64,4 @@ if im is not None:
         with st.beta_container():
             im_col, text_col = st.beta_columns([1, 5])
             im_col.image(t, use_column_width=True)
-            text_col.text(c.name)
-
+            text_col.markdown(f"[{c.name}](https://optc-db.github.io/characters/#/view/{c.number})")
