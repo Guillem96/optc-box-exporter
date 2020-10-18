@@ -1,0 +1,11 @@
+# Data
+data/
+rois/
+
+# Python
+*.pyc
+__pycache__/
+
+# Visual Studio Code
+.vscode/
+.DS_Store
