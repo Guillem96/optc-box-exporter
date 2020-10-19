@@ -24,6 +24,13 @@ def streamlit_app():
     streamlit.cli._main_run(filename, args)
 
 
+@main.command("flask")
+@click.option("--debug/--prod", default=True)
+def flask_app(debug):
+    from optcbx.app_flask import app
+    app.run(host='0.0.0.0', port=os.environ.get('PORT', 1234), debug=debug)
+
+
 @main.command("demo")
 @click.argument('screenshot', type=click.Path(dir_okay=False, exists=True))
 @click.option('--units', type=click.Path(file_okay=True, exists=True), 
@@ -71,6 +78,7 @@ def demo(screenshot: str, units: str):
 
     cv2.waitKey(0)
     cv2.destroyAllWindows()
+
 
 main.add_command(download_portraits.main, name='download-portraits')
 
