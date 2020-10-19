@@ -6,6 +6,7 @@ import requests
 import functools
 from pathlib import Path
 import multiprocessing as mp
+from typing import Optional
 
 import click
 import tqdm.auto as tqdm
@@ -709,6 +710,7 @@ def download_portrait(p, out_path):
             shutil.copyfileobj(r.raw, f)
     else:
         print("Error while downloading:", url)
+
 
 @click.command()
 @click.option('--units', type=click.Path(file_okay=True, exists=True), 
