@@ -3,7 +3,7 @@
 Export your OPTC character box automatically from screenshots.
 
 OPTCbx can analyze your character box screenshots (*Figure 1*), and obtain all the 
-characters within it, without any manual intervention.
+characters within them. OPTCbx does that without any manual intervention.
 
 OPTCbx is the first box exporter for One Piece Treasure Cruise without any manual
 intervention. It works with just a set of screenshots.
