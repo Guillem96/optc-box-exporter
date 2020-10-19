@@ -1,5 +1,6 @@
 # Data
-data/
+/data/*/*
+
 rois/
 
 # Python
@@ -9,3 +10,5 @@ __pycache__/
 # Visual Studio Code
 .vscode/
 .DS_Store
+
+!/data/screenshots/*.jpg
