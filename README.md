@@ -1,12 +1,16 @@
-# OPTC Box Exporter [PoC]
+# OPTC Box Exporter (OPTCbx)
 
+Export your OPTC character box automatically from screenshots.
 
 OPTCbx can analyze your character box screenshots (*Figure 1*), and obtain all the 
 characters within it, without any manual intervention.
 
+OPTCbx is the first box exporter for One Piece Treasure Cruise without any manual
+intervention. It works with just a set of screenshots.
+
 <div>
     <p align="center">
-        <img style=" margin: auto; display: block" src="data/screenshots/Screenshot_20201014-155031.jpg" width=100/>
+        <img style=" margin: auto; display: block" src="data/screenshots/Screenshot_20201014-155031.jpg" width=200/>
     </p>
     <p align="center" style="text-align: center;"><i>Figure 1: Box Screenshot</i></p>
 </div>
@@ -73,7 +77,7 @@ Below I detail the methods used at each step:
 
 <div>
     <p align="center">
-        <img style=" margin: auto; display: block" src="images/canny.jpg" width=200/>
+        <img style=" margin: auto; display: block" src="images/canny.jpg" width=250/>
     </p>
     <p align="center" style="text-align: center;"><i>Figure 2: Canny edge detection result</i></p>
 </div>
@@ -84,7 +88,7 @@ Below I detail the methods used at each step:
 
 <div>
     <p align="center">
-        <img style=" margin: auto; display: block" src="images/boxes.jpg" width=200/>
+        <img style=" margin: auto; display: block" src="images/boxes.jpg" width=250/>
     </p>
     <p align="center" style="text-align: center;"><i>Figure 3: Boxes wrapping characters</i></p>
 </div>
