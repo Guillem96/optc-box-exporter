@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}OPTCbx{% endblock %}
+
+{% block content %}
+
+<h1 class="display-4">OPTC Box Exporter (OPTCbx)</h1>
+
+{% include 'intro.html' %}
+
+{% include 'demo.html' %}
+
+{% include 'disclaimer.html' %}
+
+<h3 class="display-1 text-center">🎉 <br>Thank you for your support! <br>🎉</h3>
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endblock %}
