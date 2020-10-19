@@ -93,6 +93,6 @@ Below I detail the methods used at each step:
 5. **Results**
 
 <div>
-    <img style=" margin: auto; display: block" src="images/demo-out.png" width=500/>
-    <p style="text-align: center;"><i>Figure 4: Matched characters. For each column, the character appearing at the right is your character and the one at the left is the OPTC db entry (exported </i></p>
+    <img style=" margin: auto !important; display: block !important" src="images/demo-out.png" width=500/>
+    <p style="text-align: center !important;"><i>Figure 4: Matched characters. For each column, the character appearing at the right is your character and the one at the left is the OPTC db entry (exported one)</i></p>
 </div>
