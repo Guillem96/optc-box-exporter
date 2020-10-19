@@ -1,0 +1,37 @@
+<h2 class="mt-4 mb-4" id="demo">Try it out!</h2>
+
+<h4>Image Size</h4>
+<div class="slidecontainer">
+  <p>
+    Pick an image size. Larger image sizes enhance results, but increases
+    computation time. 
+  </p>
+  <p class="alert alert-warning">
+    Sizes larger than 100 are not recommended due its high computational cost
+  </p>
+  <code class="slider-disp">
+    Image Size: 64x64
+  </code>
+  <input type="range" min="32" max="128" step="2" value="64" class="slider" 
+    id="image-size-slider">
+</div>
+
+<form class="mt-2 pt-3">
+  <h4>Upload Screenshot</h4>
+
+  <div class="form-group">
+    <label for="screenshot-file">Character box Screenshot</label>
+    <input type="file" class="form-control-file" id="screenshot-file">
+  </div>
+
+  <div class="screenshot-preview">
+
+  </div>
+</form>
+
+<button class="mt-4 btn btn-block btn-lg btn-outline-secondary text-center"
+  id="export-btn"
+  onclick="exportCharacterBox()"
+  disabled="true">Export!</button>
+
+<div class="export-disp"></div>

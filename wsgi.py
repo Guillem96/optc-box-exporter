@@ -1,0 +1,1 @@
+from optcbx.app_flask import app as application
