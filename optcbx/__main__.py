@@ -5,17 +5,19 @@ import cv2
 import click
 import numpy as np
 
-import streamlit.cli
-
 import optcbx
+from optcbx import download_portraits
 
 
 @click.group()
 def main():
     pass
 
+
 @main.command("streamlit")
 def streamlit_app():
+    import streamlit.cli
+
     dirname = os.path.dirname(__file__)
     filename = os.path.join(dirname, 'app_st.py')
     args = []
@@ -66,8 +68,11 @@ def demo(screenshot: str, units: str):
         demo_image[start_h: end_h, end_w:end_w + image_size] = portrait_match
 
     cv2.imshow('distances', demo_image)
+
     cv2.waitKey(0)
     cv2.destroyAllWindows()
+
+main.add_command(download_portraits.main, name='download-portraits')
 
 
 if __name__ == "__main__":

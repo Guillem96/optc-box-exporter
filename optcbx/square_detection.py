@@ -115,7 +115,7 @@ def detect_characters(
     for i, (x, y, w, h) in enumerate(valid_rects.astype('int32')):
         ROI = image[y:y+h, x:x+w]
         characters.append(ROI)
-    #     cv2.rectangle(image, (x, y), (x + w, y + h), (36,255,12), 5)
+        # cv2.rectangle(image, (x, y), (x + w, y + h), (36,255,12), 5)
 
     if characters_size is not None:
         characters = np.array([cv2.resize(o, characters_size) 

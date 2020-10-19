@@ -64,7 +64,7 @@ def cache_on_button_press(label, **cache_kwargs):
     return function_decorator
 
 
-@cache_on_button_press('Run export')
+# @cache_on_button_press('Run export')
 def process_image(im):
     if im is None:
         return [], []
@@ -85,23 +85,20 @@ def send_feedback(feedbacks):
 
 
 """
-# OPTC Box Exporter [PoC]
-
-This web application aims to showcase the OPTC Box Exporter (OPTCbx) project.
-
-OPTCbx is able to analyze your character box screenshot, and obtain all the 
+OPTCbx can analyze your character box screenshots, and obtain all the 
 characters within it, without any manual intervention.
 
 By its own, OPTCbx, does not have any utility apart from showing your character 
-box in a fancy manner. Power comes with the contributions. I believe that
-OPTCbx can be a key point combined with projects such:
+box in a fancy manner. 
 
-- [NakamaNetwork](https://www.nakama.network/): With OPTCbx you are not far from automatically exporting 
-your teams to this amazing website.
+Power comes with contributions. I believe that OPTCbx can be a key point
+combined with projects such as:
 
-- [CrewPlanner](https://www.reddit.com/r/OnePieceTC/comments/j60ueg/crew_planner_is_now_available/): Image that you can export all your characters to CrewPlanner
-without spending hours introducing your character one by one. With OPTCbx, you
-will be able to do so with just few minuts or even seconds 😲.
+- [NakamaNetwork](https://www.nakama.network/): With OPTCbx you are not far 
+from automatically exporting your teams or your box to this extraordinary website.
+
+- [CrewPlanner](https://www.reddit.com/r/OnePieceTC/comments/j60ueg/crew_planner_is_now_available/): Imagine that you can export all your characters to CrewPlanner without spending hours introducing your characters one by one. With OPTCbx, you
+will be able to do so with just a few minutes or even seconds 😲.
 
 - [TM Planner](https://lukforce.bitbucket.io/tm-planner/): OPTCbx would provide the ability to automatically select the 
 characters that you don't own.
@@ -128,21 +125,25 @@ im = st.file_uploader("Select a character box screenshot")
 optc_db_url = "https://optc-db.github.io/characters/#/view"
 
 try:
-    characters, thumbnails = process_image(im)
-    st.success(f"Found {len(characters)} characters in your box")
-    feedbacks = [''] * len(characters)
-    for i, (c, t) in enumerate(zip(characters, thumbnails)):
-        with st.beta_container():
-            im_col, text_col, fb_col = st.beta_columns([1, 4, 1])
+    if im is not None:
+        with st.spinner(text='Analyzing your character box... This may take a while'):
+            characters, thumbnails = process_image(im)
+        st.success(f"Found {len(characters)} characters in your box")
 
-            im_col.image(t, use_column_width=False)
-            text_col.markdown(f"[{c.name}]({optc_db_url}/{c.number})")
+        # feedbacks = [''] * len(characters)
+        
+        for i, (c, t) in enumerate(zip(characters, thumbnails)):
+            with st.beta_container():
+                im_col, text_col, fb_col = st.beta_columns([1, 4, 1])
 
-            feedbacks[i] = fb_col.radio('',
-                                        ('Nice!', 'Bad :('),
-                                        key=f'{i}_fb_radio')
+                im_col.image(t, use_column_width=False)
+                text_col.markdown(f"[{c.name}]({optc_db_url}/{c.number})")
 
-    if st.button('Send feedback'):
-        st.success("Thanks for your feedback. We appreciate it :)")
+    #         feedbacks[i] = fb_col.radio('',
+    #                                     ('Nice!', 'Bad :('),
+    #                                     key=f'{i}_fb_radio')
+
+    # if st.button('Send feedback'):
+    #     st.success("Thanks for your feedback. We appreciate it :)")
 except StopExecution:
     pass
