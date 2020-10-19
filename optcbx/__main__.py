@@ -28,7 +28,7 @@ def streamlit_app():
 @click.option("--debug/--prod", default=True)
 def flask_app(debug):
     from optcbx.app_flask import app
-    app.run(host='0.0.0.0', port=1234, debug=debug)
+    app.run(host='0.0.0.0', port=os.environ.get('PORT', 1234), debug=debug)
 
 
 @main.command("demo")

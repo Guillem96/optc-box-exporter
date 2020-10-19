@@ -28,8 +28,8 @@ connection = psycopg2.connect(
     database=database,
     user=username,
     password=password,
-    host=hostname
-)
+    host=hostname)
+
 
 @app.route('/')
 def index():
@@ -57,12 +57,13 @@ def export():
     return_thumbnails = request.json.get("returnThumbnails", False)
 
     im = Image.open(io.BytesIO(base64.b64decode(b64_image.encode())))
-    im = np.flip(np.array(im), -1)
+    im = np.flip(np.array(im), -1).copy()
 
     if return_thumbnails:
         characters, thumbnails = optcbx.find_characters_from_screenshot(
             im, im_size, return_thumbnails=True)
         thumbnails = np.flip(thumbnails, -1)
+
         response = {
             "characters": [dict(o._asdict()) for o in characters],
             "thumbnails": [_img_to_b64(o) for o in thumbnails]

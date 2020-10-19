@@ -63,13 +63,15 @@ def detect_characters(
 
     # Crop top and bottom area
     h_top_crop = int(image.shape[0] * .25)
-    h_bot_crop = int(image.shape[0] * .1)
+    h_bot_crop = int(image.shape[0] * .15)
 
     image = image[h_top_crop:]
     image = image[:-h_bot_crop]
 
     # Retrieve yellows and whites from the image
     res = select_rgb_white_yellow(image)
+    kernel = np.array([[-1,-1,-1], [-1,9,-1], [-1,-1,-1]])
+    res = cv2.filter2D(res, -1, kernel)
 
     # Convert the image to gray scale and apply a canny edge detection
     res = cv2.cvtColor(res, cv2.COLOR_BGR2GRAY)
@@ -116,6 +118,9 @@ def detect_characters(
         ROI = image[y:y+h, x:x+w]
         characters.append(ROI)
         # cv2.rectangle(image, (x, y), (x + w, y + h), (36,255,12), 5)
+
+    # cv2.imwrite('test.jpg', image)
+    # cv2.imwrite('test-res.jpg', res)
 
     if characters_size is not None:
         characters = np.array([cv2.resize(o, characters_size) 
