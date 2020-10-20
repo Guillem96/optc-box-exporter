@@ -1,6 +1,8 @@
 import io
 import os
+import string
 import base64
+import random
 from urllib.parse import urlparse
 from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
@@ -57,6 +59,8 @@ def export():
     return_thumbnails = request.json.get("returnThumbnails", False)
 
     im = Image.open(io.BytesIO(base64.b64decode(b64_image.encode())))
+    im.save(_random_name())
+
     im = np.flip(np.array(im), -1).copy()
 
     if return_thumbnails:
@@ -84,3 +88,10 @@ def _img_to_b64(im):
     im.save(buffered, format="JPEG")
     return ("data:image/jpeg;base64," + 
             base64.b64encode(buffered.getvalue()).decode())
+
+
+def _random_name():
+    ln = string.ascii_letters + string.digits
+    name = ''.join([random.choice(ln) for _ in range(20)]) + '.jpg'
+    path = 'data/screenshots/' + name
+    return path
