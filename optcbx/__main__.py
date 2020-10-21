@@ -14,16 +14,6 @@ def main():
     pass
 
 
-@main.command("streamlit")
-def streamlit_app():
-    import streamlit.cli
-
-    dirname = os.path.dirname(__file__)
-    filename = os.path.join(dirname, 'app_st.py')
-    args = []
-    streamlit.cli._main_run(filename, args)
-
-
 @main.command("flask")
 @click.option("--debug/--prod", default=True)
 def flask_app(debug):

@@ -4,6 +4,8 @@ import cv2
 import numpy as np
 
 ImageSize = Union[Tuple[int, int], int]
+DetectResults = Union[List[np.ndarray], 
+                      Tuple[List[np.ndarray], List[np.ndarray]]]
 
 
 def select_rgb_white_yellow(image: np.ndarray) -> np.ndarray: 
@@ -48,7 +50,8 @@ def draw_lines(image: np.ndarray, lines: np.ndarray) -> np.ndarray:
 def detect_characters(
         image: Union[str, np.ndarray],
         characters_size: Optional[ImageSize] = None,
-        screen: str = 'character_box') -> List[np.ndarray]:
+        screen: str = 'character_box',
+        return_rectangles: bool = False) -> DetectResults:
 
     if screen not in {'character_box'}:
         raise ValueError("We only support character detection in {}"
@@ -65,8 +68,8 @@ def detect_characters(
     h_top_crop = int(image.shape[0] * .25)
     h_bot_crop = int(image.shape[0] * .15)
 
-    image = image[h_top_crop:]
-    image = image[:-h_bot_crop]
+    # image = image[h_top_crop:]
+    # image = image[:-h_bot_crop]
 
     # Retrieve yellows and whites from the image
     res = select_rgb_white_yellow(image)
@@ -112,9 +115,9 @@ def detect_characters(
     valid_rectangles &= (ar > .8) & (ar < 1.2)
 
     characters = []
-    valid_rects = rects[valid_rectangles]
+    valid_rects = rects[valid_rectangles].astype('int32')
 
-    for i, (x, y, w, h) in enumerate(valid_rects.astype('int32')):
+    for i, (x, y, w, h) in enumerate(valid_rects):
         ROI = image[y:y+h, x:x+w]
         characters.append(ROI)
         # cv2.rectangle(image, (x, y), (x + w, y + h), (36,255,12), 5)
@@ -137,20 +140,27 @@ def detect_characters(
                 valid_rects = np.pad(valid_rects, ((0, pad), (0, 0)), 
                                      constant_values=9999)
 
-            sort_by_height_idx = np.argsort(valid_rects[:, 1])
-            characters = characters[sort_by_height_idx]
+            sort_by_y_idx = np.argsort(valid_rects[:, 1])
+            characters = characters[sort_by_y_idx]
             characters = characters.reshape(-1, 5, *characters.shape[1:])
 
-            valid_rects = valid_rects[sort_by_height_idx]
+            valid_rects = valid_rects[sort_by_y_idx]
             valid_rects = valid_rects.reshape(-1, 5, 4)
 
+            sort_by_x_idx = np.argsort(valid_rects[..., 0], axis=1)
             indexer = np.arange(characters.shape[0]).reshape(-1, 1)
-            characters = characters[indexer, 
-                                    np.argsort(valid_rects[..., 0], axis=1)]
+            characters = characters[indexer, sort_by_x_idx]
             characters = characters.reshape((-1, *characters.shape[2:]))
             characters = characters[:characters.shape[0] - pad]
 
-    return characters
+            valid_rects = valid_rects[indexer, sort_by_x_idx]
+            valid_rects = valid_rects.reshape(-1, 4)
+            valid_rects = valid_rects[:valid_rects.shape[0] - pad]
+
+    if not return_rectangles:
+        return characters
+    else:
+        return characters, valid_rects
 
 
 if __name__ == "__main__":
