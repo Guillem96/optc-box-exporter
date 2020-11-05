@@ -20,7 +20,11 @@ import numpy as np
 @click.option('--mix-from', type=int, default=3)
 @click.option('--min-portraits', type=int, default=2)
 @click.option('--max-portraits', type=int, default=15)
-def main(input_path, output, epochs, mix_from, min_portraits, max_portraits):
+def main(input_path: str, output: str, 
+         epochs: int, mix_from: int, min_portraits: int, max_portraits: int):
+    """Given ground truth annotations mixes a set of images to generate a 
+    synthetic a dataset
+    """
     base_path = Path(input_path)
 
     output_path = Path(output)

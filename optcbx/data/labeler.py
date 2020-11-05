@@ -3,9 +3,11 @@ import json
 import glob
 import base64
 from pathlib import Path
+from typing import Union
 import tqdm.auto as tqdm
 
 import cv2
+import numpy as np
 from PIL import Image
 
 import click
@@ -16,6 +18,7 @@ import optcbx
 @click.command()
 @click.argument('data-pattern')
 def main(data_pattern: str):
+    """Labels new images with th gradient based approach"""
     labelme_base_dict = {
         "version": "4.5.6",
         "flags": {}
@@ -33,7 +36,7 @@ def main(data_pattern: str):
         json.dump(annotation, annotation_path.open('w'))
 
 
-def _process_image(im_path):
+def _process_image(im_path: Union[Path, str]) -> dict:
     im_path = Path(im_path)
     im = cv2.imread(str(im_path))
     _, rects = optcbx.detect_characters(im, 64, return_rectangles=True)
@@ -60,7 +63,7 @@ def _process_image(im_path):
     return im_metadata
 
 
-def _img_to_b64(im):
+def _img_to_b64(im: np.ndarray) -> str:
     im = Image.fromarray(im[..., ::-1])
     buffered = io.BytesIO()
     im.save(buffered, format="JPEG")

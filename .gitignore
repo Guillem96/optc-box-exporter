@@ -1,7 +1,6 @@
 # Data
 /data/*/*
-
-rois/
+!/data/screenshots/*.jpg
 
 # Python
 *.pyc
@@ -11,6 +10,9 @@ __pycache__/
 .vscode/
 .DS_Store
 
-!/data/screenshots/*.jpg
-
 .env
+*.zip
+
+# AI
+/ai/*
+!/ai/prepare-ai.sh
