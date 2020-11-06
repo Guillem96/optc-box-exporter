@@ -9,6 +9,8 @@ import tqdm.auto as tqdm
 import cv2
 import numpy as np
 
+import torch
+
 from skimage.metrics import structural_similarity as ssim
 
 from optcbx import detect_characters
@@ -89,13 +91,14 @@ def _top_similarities(characters: np.ndarray,
                       portraits: np.ndarray,
                       method: str = 'mse'):
 
-    cd = characters.reshape(len(characters), 1, -1)
-    pd = portraits.reshape(1, len(portraits), -1)
-
     print('Computing distances...')
     if method == 'mse':
+        cd = characters.reshape(len(characters), 1, -1)
+        pd = portraits.reshape(1, len(portraits), -1)
+
         distances = np.mean(np.square(cd - pd), -1)
         best_matches = np.argmax(-distances, -1)
+
     elif method == 'ssim':
         distances = []
         pool = mp.Pool(mp.cpu_count())
@@ -108,8 +111,25 @@ def _top_similarities(characters: np.ndarray,
 
         distances = np.array(distances)
         best_matches = np.argmax(distances, -1)
+
+    elif method == 'feature_vectors':
+        import torch.nn.functional as F
+        from optcbx.nn.features import (get_feature_vector,
+                                        feature_extractor,
+                                        load_portrait_features)
+
+        m = feature_extractor()
+        portraits_features = load_portrait_features()
+
+        units_features = get_feature_vector(m, characters, 3).cpu()
+        units_features = units_features.view(len(characters), 1, -1)
+
+        similarities = F.cosine_similarity(units_features, 
+                                           portraits_features, 
+                                           dim=-1)
+        best_matches = similarities.argmax(-1)
+
     else:
         raise ValueError(f"Method {method} not supported")
 
     return best_matches.tolist()
-

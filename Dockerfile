@@ -12,8 +12,8 @@ RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
 COPY data data
+COPY ai ai
 COPY optcbx optcbx
 COPY wsgi.py wsgi.py
 
-# CMD ["python", "-m", "optcbx", "flask", "--prod"]
 CMD gunicorn --bind 0.0.0.0:$PORT wsgi

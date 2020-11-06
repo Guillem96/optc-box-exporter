@@ -9,3 +9,4 @@ Flask==1.1.2
 Flask-Cors==3.0.7
 requests
 gunicorn
+git+https://github.com/Guillem96/ssd-pytorch

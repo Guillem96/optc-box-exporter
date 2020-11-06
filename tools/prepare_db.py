@@ -13,11 +13,10 @@ try:
         database=database,
         user=username,
         password=password,
-        host=hostname
-    )
+        host=hostname)
 
     cursor = connection.cursor()
-    # # Create table statement
+    
     create_table = "create table Feedback (id serial PRIMARY KEY, fb text)"
     drop_table = "DROP TABLE Feedback;"
 
@@ -33,12 +32,11 @@ try:
     for table in cursor.fetchall():
         print(table)
 
-except (Exception, psycopg2.Error) as error :
+except (Exception, psycopg2.Error) as error:
     print(error)
     print ("Error while connecting to PostgreSQL", error)
 finally:
-    #closing database connection.
-        if(connection):
-            cursor.close()
-            connection.close()
-            print("PostgreSQL connection is closed")
+    if connection:
+        cursor.close()
+        connection.close()
+        print("PostgreSQL connection is closed")

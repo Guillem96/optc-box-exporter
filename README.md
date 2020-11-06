@@ -29,8 +29,6 @@ will be able to do so with just a few minutes or even seconds 😲.
 - [TM Planner](https://lukforce.bitbucket.io/tm-planner/): OPTCbx would provide the ability to automatically select the 
 characters that you don't own.
 
-## Try it out (Web app)
-
 
 ## Try it out (Advanced users)
 
@@ -51,7 +49,15 @@ $ python -m optcbx download-portraits \
     --output data/Portraits
 ```
 
-4. Run the demo with your screenshot
+4. Download pretrained CNNs
+
+```bash
+$ cd ai
+$ sh prepare-ai.sh
+$ cd ..
+```
+
+5. Run the demo with your screenshot
 
 ```bash
 $ python -m optcbx demo <screenshot-path>
@@ -62,16 +68,20 @@ inside `tools` directory
 
 ## How it works (Advanced users)
 
-OPTCbx uses computer vision techniques combined with simple image comparison metrics to retrieve the characters sitting on your box and match them with the corresponding [OPTC database](https://optc-db.github.io/characters/#/search/) entries.
+OPTCbx supports different computer vision techniques to retrieve the characters sitting on your box and match them with the corresponding [OPTC database](https://optc-db.github.io/characters/#/search/) entries.
+
+Currently, OPTCbx supports 2 main approaches to detect and match the characters:
+
+- **Gradient based approach**: Handcrafted steps based on the colors' change gradients.
+- **Smart approach**: Based on object detection models and self-supervision to match characters.
 
 The used technologies are:
 
 - [OpenCV](https://opencv.org/)
 - [NumPy](https://numpy.org/)
+- [PyTorch](https://pytorch.org/)
 
-### Step by step
-
-Below I detail the methods used at each step:
+### Gradient based approach - Step by step
 
 1. **Retrieve character box portraits**: First keep only the high intensity colors such as white and yellow. Then with the resulting masked image I apply a canny edge detection (*Figure 2*) to obtain the character box borders.
 
@@ -110,3 +120,16 @@ Below I detail the methods used at each step:
     </p>
     <p align="center" style="text-align: center !important;"><i>Figure 4: Matched characters. For each column, the character appearing at the right is your character and the one at the left is the OPTC db entry (exported one)</i></p>
 </div>
+
+
+### Smart Approach - Step by step
+
+1. **Object detection model**: Using an own [SSD implementation](https://github.com/Guillem96/ssd-pytorch) I train an
+SSD model with a VGG-16 backbone to detect OPTC characters in any screen (Character box, crew build, pirate festival teams, etc.).
+
+2. **Self-supervision to generate image features and character matching**: Ideally instead of comparing large images, we want to compare small vectors encoding
+the most important features of the given images. To generate this features I use a pretrained CNN. Sadly an ImageNet fine-tuning is not
+enough to generate feature vectors with high capacity of representation. Therefore, I self-supervise a Resnet-18 so it learns to
+reconstruct One Piece Characters' portraits. Using this new pretrained model the resulting matches seems accurate.
+
+> NOTE: The ones interested in the AI part I upload all the related code inside the `notebooks` directory.

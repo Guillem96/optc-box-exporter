@@ -1,9 +1,13 @@
+import yaml
 from typing import List, Optional, Union, Tuple
 
 import cv2
 import numpy as np
 
+
 ImageSize = Union[Tuple[int, int], int]
+DetectResults = Union[List[np.ndarray], 
+                      Tuple[List[np.ndarray], List[np.ndarray]]]
 
 
 def select_rgb_white_yellow(image: np.ndarray) -> np.ndarray: 
@@ -48,12 +52,86 @@ def draw_lines(image: np.ndarray, lines: np.ndarray) -> np.ndarray:
 def detect_characters(
         image: Union[str, np.ndarray],
         characters_size: Optional[ImageSize] = None,
-        screen: str = 'character_box') -> List[np.ndarray]:
+        screen: str = 'character_box',
+        approach: str = 'smart',
+        return_rectangles: bool = False) -> DetectResults:
+
+    if approach not in {'smart', 'gradient_based'}:
+        raise ValueError("We only support 'smart' or 'gradient_based'"
+                         f"approaches, and you provided {approach}")
 
     if screen not in {'character_box'}:
         raise ValueError("We only support character detection in {}"
                          " and you provided {}".format({'character_box'}, 
                                                        screen))
+
+    if approach == 'gradient_based':
+        return _gradient_based_approach(image, characters_size,
+                                        screen, return_rectangles)
+    elif approach == 'smart':
+        return _smart_approach(image, characters_size, return_rectangles)
+
+
+# Again, this is for efficiency, global variables usually suck
+_model = None
+
+
+def _smart_approach(image: Union[str, np.ndarray],
+                    characters_size: Optional[ImageSize] = None,
+                    return_rectangles: bool = False):
+    global _model, _config
+
+    import torch
+    import ssd
+    import ssd.transforms as T
+
+    device = torch.device('cpu')
+    tfms = T.get_transforms(300, inference=True)
+
+    if isinstance(characters_size, int):
+        characters_size = (characters_size,) * 2
+
+    if isinstance(image, str):
+        image = cv2.imread(image)
+
+    if _model is None:
+        config = yaml.safe_load(open('ai/config.yml'))['config']
+
+        _model = ssd.SSD300(config)
+        _model.eval()
+
+        checkpoint = torch.load('ai/checkpoint.pt', map_location=device)
+        _model.load_state_dict(checkpoint)
+        _model.to(device)
+
+    im_in = tfms(image)
+    im_in = im_in.unsqueeze(0).to(device)
+
+    scale = torch.as_tensor([image.shape[1], image.shape[0]] * 2)
+    scale.unsqueeze_(0)
+
+    with torch.no_grad():
+        detections = _model(im_in)[0]
+
+    true_mask = detections['scores'] > .5
+    boxes = (detections['boxes'][true_mask].cpu() * scale).int().numpy()
+    characters = [image[y_min: y_max, x_min: x_max] 
+                  for x_min, y_min, x_max, y_max in boxes]
+
+    if characters_size is not None:
+        characters = np.array([cv2.resize(o, characters_size) 
+                               for o in characters])
+
+    if not return_rectangles:
+        return characters
+    else:
+        return characters, valid_rects
+
+
+def _gradient_based_approach(image: Union[str, np.ndarray],
+                             characters_size: Optional[ImageSize] = None,
+                             screen: str = 'character_box',
+                             return_rectangles: bool = False):
 
     if isinstance(characters_size, int):
         characters_size = (characters_size,) * 2
@@ -65,8 +143,8 @@ def detect_characters(
     h_top_crop = int(image.shape[0] * .25)
     h_bot_crop = int(image.shape[0] * .15)
 
-    image = image[h_top_crop:]
-    image = image[:-h_bot_crop]
+    # image = image[h_top_crop:]
+    # image = image[:-h_bot_crop]
 
     # Retrieve yellows and whites from the image
     res = select_rgb_white_yellow(image)
@@ -111,16 +189,8 @@ def detect_characters(
     valid_rectangles = (areas > min_area) & (areas < max_area)
     valid_rectangles &= (ar > .8) & (ar < 1.2)
 
-    characters = []
-    valid_rects = rects[valid_rectangles]
-
-    for i, (x, y, w, h) in enumerate(valid_rects.astype('int32')):
-        ROI = image[y:y+h, x:x+w]
-        characters.append(ROI)
-        # cv2.rectangle(image, (x, y), (x + w, y + h), (36,255,12), 5)
-
-    # cv2.imwrite('test.jpg', image)
-    # cv2.imwrite('test-res.jpg', res)
+    valid_rects = rects[valid_rectangles].astype('int32')
+    characters = [image[y:y+h, x:x+w] for x, y, w, h in valid_rects]
 
     if characters_size is not None:
         characters = np.array([cv2.resize(o, characters_size) 
@@ -137,20 +207,27 @@ def detect_characters(
                 valid_rects = np.pad(valid_rects, ((0, pad), (0, 0)), 
                                      constant_values=9999)
 
-            sort_by_height_idx = np.argsort(valid_rects[:, 1])
-            characters = characters[sort_by_height_idx]
+            sort_by_y_idx = np.argsort(valid_rects[:, 1])
+            characters = characters[sort_by_y_idx]
             characters = characters.reshape(-1, 5, *characters.shape[1:])
 
-            valid_rects = valid_rects[sort_by_height_idx]
+            valid_rects = valid_rects[sort_by_y_idx]
             valid_rects = valid_rects.reshape(-1, 5, 4)
 
+            sort_by_x_idx = np.argsort(valid_rects[..., 0], axis=1)
             indexer = np.arange(characters.shape[0]).reshape(-1, 1)
-            characters = characters[indexer, 
-                                    np.argsort(valid_rects[..., 0], axis=1)]
+            characters = characters[indexer, sort_by_x_idx]
             characters = characters.reshape((-1, *characters.shape[2:]))
             characters = characters[:characters.shape[0] - pad]
 
-    return characters
+            valid_rects = valid_rects[indexer, sort_by_x_idx]
+            valid_rects = valid_rects.reshape(-1, 4)
+            valid_rects = valid_rects[:valid_rects.shape[0] - pad]
+
+    if not return_rectangles:
+        return characters
+    else:
+        return characters, valid_rects
 
 
 if __name__ == "__main__":

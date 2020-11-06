@@ -6,7 +6,7 @@ import requests
 import functools
 from pathlib import Path
 import multiprocessing as mp
-from typing import Optional
+from typing import Optional, Tuple
 
 import click
 import tqdm.auto as tqdm
@@ -690,13 +690,13 @@ def get_portrait_url(cid: Optional[str]) -> str:
         return 'https://onepiece-treasurecruise.com/wp-content/uploads/f' + cid + '.png';
 
 
-def generate_id(idx):
+def generate_id(idx: int) -> str:
     idx = str(idx)
     padding = 4 - len(idx)
     return '0' * padding + idx
 
 
-def download_portrait(p, out_path):
+def download_portrait(p: Tuple[str, str], out_path: Path):
     cid, url = p
     dst_path = str(out_path / f"{cid}.png")
 
@@ -718,6 +718,8 @@ def download_portrait(p, out_path):
 @click.option('--output', type=click.Path(file_okay=False), 
               default='data/Portrait')
 def main(units: str, output: str):
+    """Download all characters portraits
+    """
     output = Path(output)
     output.mkdir(exist_ok=True, parents=True)
 
