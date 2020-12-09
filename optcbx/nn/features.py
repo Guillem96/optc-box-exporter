@@ -51,7 +51,8 @@ def feature_extractor():
     if _model is None:
         _model = zoo.resnet18(pretrained=False)
         _model = torch.nn.Sequential(*list(_model.children())[:-1])
-        _model.load_state_dict(torch.load('ai/fe.pt'))
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        _model.load_state_dict(torch.load('ai/fe.pt', map_location=device))
         _model.eval()
 
     return _model
