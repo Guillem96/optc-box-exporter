@@ -2,6 +2,10 @@
 /data/*/*
 !/data/screenshots/*.jpg
 
+# Intermediate data
+tools/units.js*
+tools/modifiedUnits.js
+
 # Python
 *.pyc
 __pycache__/
