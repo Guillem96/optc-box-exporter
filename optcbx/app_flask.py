@@ -95,3 +95,4 @@ def _random_name():
     name = ''.join([random.choice(ln) for _ in range(20)]) + '.jpg'
     path = 'data/screenshots/' + name
     return path
+

@@ -734,7 +734,9 @@ def main(units: str, output: str):
         r = list(tqdm.tqdm(p.imap(download_fn, portraits_urls), 
                            total=len(portraits_urls)))
         p.close()
-    except:
+    except Exception as e:
+        print(str(e)
+    except KeyboardInterrupt:
         print ("You cancelled the program!")
         p.terminate()
         p.join()
@@ -743,3 +745,4 @@ def main(units: str, output: str):
 
 if __name__ == "__main__":
     main()
+
