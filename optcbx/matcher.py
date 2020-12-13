@@ -65,9 +65,9 @@ def find_characters_ids(
     global _portraits, _portraits_paths
 
     if _portraits_paths is None:
-        _portraits_paths = list(Path('data/Portrait').glob('*.png'))
+        _portraits_paths = list(Path('data/Portraits').glob('*.png'))
 
-    if _portraits.get(image_size) is None:
+    if image_size not in _portraits:
         _portraits[image_size] = np.array(
             [_load_im(o, image_size) for o in tqdm.tqdm(_portraits_paths)])
 

@@ -1,5 +1,6 @@
 opencv-python==4.4.0.44
 tqdm==4.46.0
+pyyaml
 click==7.1.2
 numpy==1.18.5
 scikit-image==0.17.2

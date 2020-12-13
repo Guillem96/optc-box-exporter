@@ -41,7 +41,18 @@ in your computer.
 $ pip install -r requirements.txt
 ```
 
-3. Download the portraits
+3. *Optional*. Download the most recent units from [OPTC DB](https://github.com/optc-db/optc-db.github.io)
+
+```bash
+$ cd tools
+$ sh download-units.sh
+$ cd ..
+```
+
+After running the above commands you should be able to find `units.json` under the data directory.
+
+
+4. Download the portraits images
 
 ```bash
 $ python -m optcbx download-portraits \

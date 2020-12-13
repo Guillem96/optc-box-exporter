@@ -35,13 +35,16 @@ $(document).ready(function () {
 });
 
 function exportCharacterBox() {
-    const imageSize = $('#image-size-slider').value;
+    const imageSize = parseInt($('#image-size-slider').val());    
     const image = currentScreenshotB64;
     const body = {
         imageSize,
         image,
         returnThumbnails: true
     };
+
+    console.log(imageSize);
+
     load();
     post('/export', body).then(renderExport);
 }
