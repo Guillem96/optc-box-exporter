@@ -735,7 +735,7 @@ def main(units: str, output: str):
                            total=len(portraits_urls)))
         p.close()
     except Exception as e:
-        print(str(e)
+        print(str(e))
     except KeyboardInterrupt:
         print ("You cancelled the program!")
         p.terminate()
