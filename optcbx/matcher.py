@@ -9,20 +9,16 @@ import tqdm.auto as tqdm
 import cv2
 import numpy as np
 
-import torch
-
 from skimage.metrics import structural_similarity as ssim
 
 from optcbx import detect_characters
 from optcbx.units import parse_units, Character
-
 
 # Keep computational expensive variables in memory
 _portraits_paths = None
 _portraits = {}
 _units = None
 _units_ids = None
-
 
 FindCharactersResult = Union[List[int], Tuple[List[int], np.ndarray]]
 
@@ -55,10 +51,9 @@ def find_characters_from_screenshot(
         return matched_units, characters
 
 
-def find_characters_ids(
-        characters: np.ndarray,
-        return_portraits: bool = False,
-        dist_method: str = 'mse') -> FindCharactersResult:
+def find_characters_ids(characters: np.ndarray,
+                        return_portraits: bool = False,
+                        dist_method: str = 'mse') -> FindCharactersResult:
 
     image_size = characters.shape[1:3]
 
@@ -87,7 +82,7 @@ def _load_im(path, size):
     return cv2.resize(im, size[::-1])
 
 
-def _top_similarities(characters: np.ndarray, 
+def _top_similarities(characters: np.ndarray,
                       portraits: np.ndarray,
                       method: str = 'mse'):
 
@@ -104,8 +99,8 @@ def _top_similarities(characters: np.ndarray,
         pool = mp.Pool(mp.cpu_count())
         for c in tqdm.tqdm(characters):
             dist_fn = functools.partial(ssim, im2=c, multichannel=True)
-            cur_dists = list(tqdm.tqdm(pool.imap(dist_fn, portraits),
-                                       total=len(portraits)))
+            cur_dists = list(
+                tqdm.tqdm(pool.imap(dist_fn, portraits), total=len(portraits)))
             distances.append(cur_dists)
         pool.close()
 
@@ -114,8 +109,7 @@ def _top_similarities(characters: np.ndarray,
 
     elif method == 'feature_vectors':
         import torch.nn.functional as F
-        from optcbx.nn.features import (get_feature_vector,
-                                        feature_extractor,
+        from optcbx.nn.features import (get_feature_vector, feature_extractor,
                                         load_portrait_features)
 
         m = feature_extractor()
@@ -124,8 +118,8 @@ def _top_similarities(characters: np.ndarray,
         units_features = get_feature_vector(m, characters, 3).cpu()
         units_features = units_features.view(len(characters), 1, -1)
 
-        similarities = F.cosine_similarity(units_features, 
-                                           portraits_features, 
+        similarities = F.cosine_similarity(units_features,
+                                           portraits_features,
                                            dim=-1)
         best_matches = similarities.argmax(-1)
 

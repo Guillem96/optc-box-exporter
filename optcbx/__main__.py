@@ -26,7 +26,8 @@ def flask_app(debug: bool):
 
 @main.command("demo")
 @click.argument('screenshot', type=click.Path(dir_okay=False, exists=True))
-@click.option('--units', type=click.Path(file_okay=True, exists=True), 
+@click.option('--units',
+              type=click.Path(file_okay=True, exists=True),
               default='data/units.json')
 @click.option('--smart/--no-smart', default=True)
 def demo(screenshot: str, units: str, smart: bool):
@@ -54,9 +55,9 @@ def demo(screenshot: str, units: str, smart: bool):
     rows, m = divmod(characters.shape[0], cols)
     rows += (m > 0)
 
-    demo_image = np.zeros((rows * image_size,
-                           image_size * cols * 2 + col_margin * (cols - 1),
-                           3), dtype='uint8')
+    demo_image = np.zeros(
+        (rows * image_size, image_size * cols * 2 + col_margin * (cols - 1), 3),
+        dtype='uint8')
 
     for i, c in enumerate(characters):
         portrait_match = best_portraits[i]
@@ -69,8 +70,8 @@ def demo(screenshot: str, units: str, smart: bool):
         start_w = column * image_size * 2 + (column * col_margin)
         end_w = start_w + image_size
 
-        demo_image[start_h: end_h, start_w:end_w] = c
-        demo_image[start_h: end_h, end_w:end_w + image_size] = portrait_match
+        demo_image[start_h:end_h, start_w:end_w] = c
+        demo_image[start_h:end_h, end_w:end_w + image_size] = portrait_match
 
     cv2.imshow('distances', demo_image)
 
@@ -82,6 +83,6 @@ if __name__ == "__main__":
     main.add_command(data.download_portraits.main, name='download-portraits')
     main.add_command(data.labeler.main, name='semi-supervised-labels')
     main.add_command(data.synthetic_dataset.main, name='synthetic')
-    main.add_command(nn.compute_portraits_features.main, 
+    main.add_command(nn.compute_portraits_features.main,
                      name='gen-portraits-features')
     main()

@@ -9,685 +9,881 @@ import multiprocessing as mp
 from typing import Optional, Tuple
 
 import click
-import tqdm.auto as tqdm
+from tqdm.contrib.concurrent import thread_map
 
 from optcbx.units import viable_unit
 
 
 def get_portrait_url(cid: Optional[str]) -> str:
     if cid is None:
-        return 'https://onepiece-treasurecruise.com/wp-content/themes/onepiece-treasurecruise/images/noimage.png'
-    elif cid == '0742': 
+        return "https://onepiece-treasurecruise.com/wp-content/themes/onepiece-treasurecruise/images/noimage.png"
+    elif cid == '0742':
         return 'https://onepiece-treasurecruise.com/wp-content/uploads/f0742-2.png'
-    elif cid ==  '3000': 
+    elif cid == '3000':
         return 'https://onepiece-treasurecruise.com/wp-content/uploads/f3000_1.png'
-    elif cid == '2262': 
-        return 'http://onepiece-treasurecruise.com/en/wp-content/uploads/sites/2/f5011.png'
-    elif cid == '2263': 
+        # elif cid == '2262':
+        #     return  'http://onepiece-treasurecruise.com/en/wp-content/uploads/sites/2/f5011.png'
+        # elif cid == '2263':
         return 'http://onepiece-treasurecruise.com/en/wp-content/uploads/sites/2/f5012.png'
-    elif cid == '2500': 
+        # elif cid == '2500':
         return 'http://onepiece-treasurecruise.com/en/wp-content/uploads/sites/2/f2500.png'
-    elif cid ==  '3333': 
+    elif cid == '3080':
+        return '../res/sadBandai/character_11669_t1.png'
+    elif cid == '3081':
+        return '../res/sadBandai/character_11506_t1.png'
+    elif cid == '3085':
+        return '../res/sadBandai/character_11668_t1.png'
+    elif cid == '3086':
+        return '../res/sadBandai/character_11505_t1.png'
+    elif cid == '3087':
+        return '../res/sadBandai/character_11707_t1.png'
+    elif cid == '3088':
+        return '../res/sadBandai/character_11708_t1.png'
+    elif cid == '3089':
+        return '../res/sadBandai/character_11709_t1.png'
+    elif cid == '3090':
+        return '../res/sadBandai/character_11086_t1.png'
+    elif cid == '3091':
+        return '../res/sadBandai/character_11087_t1.png'
+    elif cid == '3092':
+        return '../res/sadBandai/character_11088_t1.png'
+    elif cid == '3093':
+        return '../res/sadBandai/character_11089_t1.png'
+    elif cid == '3094':
+        return '../res/sadBandai/character_11710_t1.png'
+    elif cid == '3095':
+        return '../res/sadBandai/character_11409_t1.png'
+    elif cid == '3096':
+        return '../res/sadBandai/character_11705_t1.png'
+    elif cid == '3097':
+        return '../res/sadBandai/character_11711_t1.png'
+    elif cid == '3098':
+        return '../res/sadBandai/character_11714_t1.png'
+    elif cid == '3099':
+        return '../res/sadBandai/character_11715_t1.png'
+    elif cid == '3100':
+        return '../res/sadBandai/character_11716_t1.png'
+    elif cid == '3101':
+        return '../res/sadBandai/character_11717_t1.png'
+    elif cid == '3102':
+        return '../res/sadBandai/character_11718_t1.png'
+    elif cid == '3103':
+        return '../res/sadBandai/character_11719_t1.png'
+    elif cid == '3104':
+        return '../res/sadBandai/character_11720_t1.png'
+    elif cid == '3105':
+        return '../res/sadBandai/character_11721_t1.png'
+    elif cid == '3106':
+        return '../res/sadBandai/character_11722_t1.png'
+    elif cid == '3107':
+        return '../res/sadBandai/character_11727_t1.png'
+    elif cid == '3108':
+        return '../res/sadBandai/character_11724_t1.png'
+    elif cid == '3109':
+        return '../res/sadBandai/character_11725_t1.png'
+    elif cid == '3110':
+        return '../res/sadBandai/character_11728_t1.png'
+    elif cid == '3111':
+        return '../res/sadBandai/character_11762_t1.png'
+    elif cid == '3112':
+        return '../res/sadBandai/character_11800_t1.png'
+    elif cid == '3113':
+        return '../res/sadBandai/character_11801_t1.png'
+    elif cid == '3114':
+        return '../res/sadBandai/character_11802_t1.png'
+    elif cid == '3115':
+        return '../res/sadBandai/character_11803_t1.png'
+    elif cid == '3116':
+        return '../res/sadBandai/character_11_t1.png'
+    elif cid == '3117':
+        return '../res/sadBandai/character_11804_t1.png'
+    elif cid == '3118':
+        return '../res/sadBandai/character_11805_t1.png'
+    elif cid == '3119':
+        return '../res/sadBandai/character_11_t1.png'
+    elif cid == '3120':
+        return '../res/sadBandai/character_11806_t1.png'
+    elif cid == '3121':
+        return '../res/sadBandai/character_11807_t1.png'
+    elif cid == '3122':
+        return '../res/sadBandai/character_11334_t1.png'
+    elif cid == '3123':
+        return '../res/sadBandai/character_11335_t1.png'
+    elif cid == '3124':
+        return '../res/sadBandai/character_11808_t1.png'
+    elif cid == '3125':
+        return '../res/sadBandai/character_11726_t1.png'
+    elif cid == '3126':
+        return '../res/sadBandai/character_11580_t1.png'
+    elif cid == '3127':
+        return '../res/sadBandai/character_11581_t1.png'
+    elif cid == '3128':
+        return '../res/sadBandai/character_11569_t1.png'
+    elif cid == '3129':
+        return '../res/sadBandai/character_11570_t1.png'
+    elif cid == '3130':
+        return '../res/sadBandai/character_11_t1.png'
+    elif cid == '3131':
+        return '../res/sadBandai/character_11_t1.png'
+    elif cid == '3132':
+        return '../res/sadBandai/character_11_t1.png'
+    elif cid == '3133':
+        return '../res/sadBandai/character_11_t1.png'
+    elif cid == '3134':
+        return '../res/sadBandai/character_11809_t1.png'
+    elif cid == '3135':
+        return '../res/sadBandai/character_11678_t1.png'
+    elif cid == '3136':
+        return '../res/sadBandai/character_11679_t1.png'
+    elif cid == '3137':
+        return '../res/sadBandai/character_11680_t1.png'
+    elif cid == '3138':
+        return '../res/sadBandai/character_11681_t1.png'
+    elif cid == '3139':
+        return '../res/sadBandai/character_11682_t1.png'
+    elif cid == '3140':
+        return '../res/sadBandai/character_11683_t1.png'
+    elif cid == '3141':
+        return '../res/sadBandai/character_11684_t1.png'
+    elif cid == '3142':
+        return '../res/sadBandai/character_11811_t1.png'
+    elif cid == '3143':
+        return '../res/sadBandai/character_11813_t1.png'
+    elif cid == '3144':
+        return '../res/sadBandai/character_11810_t1.png'
+    elif cid == '3145':
+        return '../res/sadBandai/character_11518_t1.png'
+    elif cid == '3146':
+        return '../res/sadBandai/character_11815_t1.png'
+    elif cid == '3147':
+        return '../res/sadBandai/character_11816_t1.png'
+    elif cid == '3148':
+        return '../res/sadBandai/character_11817_t1.png'
+    elif cid == '3149':
+        return '../res/sadBandai/character_11406_t1.png'
+    elif cid == '3150':
+        return '../res/sadBandai/character_11814_t1.png'
+    elif cid == '3151':
+        return '../res/sadBandai/character_11217_t1.png'
+    elif cid == '3152':
+        return '../res/sadBandai/character_11819_t1.png'
+    elif cid == '3153':
+        return '../res/sadBandai/character_11818_t1.png'
+    elif cid == '3154':
+        return '../res/sadBandai/character_11407_t1.png'
+    elif cid == '3155':
+        return '../res/sadBandai/character_11_t1.png'
+    elif cid == '3156':
+        return '../res/sadBandai/character_11400_t1.png'
+    elif cid == '3157':
+        return '../res/sadBandai/character_11338_t1.png'
+    elif cid == '3158':
+        return '../res/sadBandai/character_11812_t1.png'
+    elif cid == '3159':
+        return '../res/sadBandai/character_10768_t1.png'
+    elif cid == '3160':
+        return '../res/sadBandai/character_10484_t1.png'
+    elif cid == '3161':
+        return '../res/sadBandai/character_11112_t1.png'
+    elif cid == '3162':
+        return '../res/sadBandai/character_11556_t1.png'
+    elif cid == '3163':
+        return '../res/sadBandai/character_11855_t1.png'
+    elif cid == '3164':
+        return '../res/sadBandai/character_11856_t1.png'
+    elif cid == '3165':
+        return '../res/sadBandai/character_11861_t1.png'
+    elif cid == '3166':
+        return '../res/sadBandai/character_11862_t1.png'
+    elif cid == '3167':
+        return '../res/sadBandai/character_11863_t1.png'
+    elif cid == '3168':
+        return '../res/sadBandai/character_11864_t1.png'
+    elif cid == '3169':
+        return '../res/sadBandai/character_11865_t1.png'
+    elif cid == '3170':
+        return '../res/sadBandai/character_11866_t1.png'
+    elif cid == '3171':
+        return '../res/sadBandai/character_11867_t1.png'
+    elif cid == '3172':
+        return '../res/sadBandai/character_11868_t1.png'
+    elif cid == '3173':
+        return '../res/sadBandai/character_11_t1.png'
+    elif cid == '3174':
+        return '../res/sadBandai/character_11_t1.png'
+    elif cid == '3175':
+        return '../res/sadBandai/character_11_t1.png'
+    elif cid == '3176':
+        return '../res/sadBandai/character_11_t1.png'
+    elif cid == '3177':
+        return '../res/sadBandai/character_11_t1.png'
+    elif cid == '3333':
         return 'http://onepiece-treasurecruise.com/en/wp-content/uploads/sites/2/f5013.png'
-    elif cid ==  '3334': 
+    elif cid == '3334':
         return 'http://onepiece-treasurecruise.com/en/wp-content/uploads/sites/2/f5014.png'
-    elif cid == '2399':
-        return 'http://onepiece-treasurecruise.com/en/wp-content/uploads/sites/2/f5015.png'
-    elif cid == '2784': 
-        return '../res/character_10642_t1.png'
-    elif cid ==  '3339': 
+    # elif cid == '2399':
+    #    return  'http://onepiece-treasurecruise.com/en/wp-content/uploads/sites/2/f5015.png'
+    # elif cid == '2784':
+    #    return  '../res/character_10642_t1.png'
+    elif cid == '3339':
         return '../res/character_10852_t1.png'
-    elif cid ==  '3340': 
+    elif cid == '3340':
         return '../res/character_10853_t1.png'
-    elif cid == '2663': 
-        return '../res/character_10713_t1.png'
-    elif cid == '2664': 
-        return '../res/character_10714_t1.png'
-    elif cid == '2685':
-        return 'http://onepiece-treasurecruise.com/en/wp-content/uploads/sites/2/f5025.png'
-    elif cid == '2686':
-        return 'http://onepiece-treasurecruise.com/en/wp-content/uploads/sites/2/f5026.png'
-    elif cid ==  '3347': 
+    # elif cid == '2663':
+    #    return  '../res/character_10713_t1.png'
+    # elif cid == '2664':
+    #    return  '../res/character_10714_t1.png'
+    # elif cid == '2685':
+    #     return  'http://onepiece-treasurecruise.com/en/wp-content/uploads/sites/2/f5025.png'
+    # elif cid == '2686':
+    # return  'http://onepiece-treasurecruise.com/en/wp-content/uploads/sites/2/f5026.png'
+    elif cid == '3347':
         return '../res/character_1508_t1.png'
-    elif cid ==  '3348': 
+    elif cid == '3348':
         return '../res/character_1509_t1.png'
-    elif cid ==  '3349': 
+    elif cid == '3349':
         return '../res/character_1510_t1.png'
-    elif cid ==  '3350': 
+    elif cid == '3350':
         return '../res/character_1511_t1.png'
-    elif cid ==  '3351': 
+    elif cid == '3351':
         return '../res/character_10861_t1.png'
-    elif cid ==  '3352': 
+    elif cid == '3352':
         return '../res/character_10862_t1.png'
-    elif cid ==  '3353': 
+    elif cid == '3353':
         return '../res/character_10994_t1.png'
-    elif cid ==  '3354': 
+    elif cid == '3354':
         return '../res/character_10995_t1.png'
-    elif cid == '2772':
-        return 'https://onepiece-treasurecruise.com/en/wp-content/uploads/sites/2/f5037.png'
-    elif cid ==  '3356': 
+    # elif cid == '2772':
+    #    return  'https://onepiece-treasurecruise.com/en/wp-content/uploads/sites/2/f5037.png'
+    elif cid == '3356':
         return '../res/character_10869_t1.png'
-    elif cid ==  '3357': 
+    elif cid == '3357':
         return '../res/character_10870_t1.png'
-    elif cid ==  '3358': 
+    elif cid == '3358':
         return '../res/character_10867_t1.png'
-    elif cid ==  '3359': 
+    elif cid == '3359':
         return '../res/character_10868_t1.png'
-    elif cid ==  '3360': 
+    elif cid == '3360':
         return '../res/character_11037_t1.png'
-    elif cid ==  '3361': 
+    elif cid == '3361':
         return '../res/character_11038_t1.png'
-    elif cid ==  '2768': 
+    elif cid == '2768':
         return '../res/character_10258_t1.png'
-    elif cid ==  '2769': 
+    elif cid == '2769':
         return '../res/character_10259_t1.png'
-    elif cid ==  '2770': 
+    elif cid == '2770':
         return '../res/character_10262_t1.png'
-    elif cid ==  '2771': 
+    elif cid == '2771':
         return '../res/character_10263_t1.png'
-    elif cid ==  '3366': 
+    elif cid == '3366':
         return '../res/character_10858_t1.png'
-    elif cid ==  '3367': 
+    elif cid == '3367':
         return '../res/character_10859_t1.png'
-    elif cid ==  '3368': 
+    elif cid == '3368':
         return '../res/character_10860_t1.png'
-    elif cid == '2919':
-        return '../res/character_10891_t1.png'
-    elif cid ==  '3370': 
-        return 'http://onepiece-treasurecruise.com/en/wp-content/uploads/sites/2/f5052.png'
-    elif cid ==  '3371': 
-        return '../res/character_11243_t.png'
-    elif cid ==  '3372': 
-        return '../res/character_11244_t.png'
-    elif cid ==  '3373': 
-        return '../res/character_11245_t.png'
-    elif cid ==  '3374': 
-        return 'http://onepiece-treasurecruise.com/en/wp-content/uploads/sites/2/f5053.png'
-    elif cid ==  '3375': 
-        return '../res/character_10863_t.png'
-    elif cid ==  '3376': 
-        return '../res/character_10864_t.png'
-    elif cid == '2929':
-        return '../res/character_11221_t1.png'
-    elif cid == '2930':
-        return '../res/character_11199_t1.png'
-    elif cid ==  '3380': 
-        return '../res/character_11333_t1.png'
-    elif cid ==  '3381': 
-        return '../res/KDugejE.png'
-    elif cid ==  '3382': 
-        return '../res/character_11615_t1.png'
-    elif cid ==  '3383': 
-        return '../res/character_11760_t.png'
-    elif cid ==  '3384': 
-        return '../res/character_11400_t1.png'
-    elif cid ==  '3385': 
-        return '../res/character_11338_t1.png'
-    elif cid == '2909':
-        return '../res/character_11173_t1.png'
+    # elif cid == '2919':
+    #    return  '../res/character_10891_t1.png'
     elif cid == '3370':
-        return '../res/character_10891_t1.png'
-    elif cid == '2440':
-        return '../res/character_10643_t1.png'
-    elif cid == '2441':
-        return '../res/character_10644_t1.png'
-    elif cid ==  '5000': 
+        return 'http://onepiece-treasurecruise.com/en/wp-content/uploads/sites/2/f5052.png'
+    elif cid == '3371':
+        return '../res/character_11243_t.png'
+    elif cid == '3372':
+        return '../res/character_11244_t.png'
+    elif cid == '3373':
+        return '../res/character_11245_t.png'
+    elif cid == '3374':
+        return 'http://onepiece-treasurecruise.com/en/wp-content/uploads/sites/2/f5053.png'
+    elif cid == '3375':
+        return '../res/character_10863_t.png'
+    elif cid == '3376':
+        return '../res/character_10864_t.png'
+        # elif cid == '2929':
+        return '../res/character_11221_t1.png'
+        # elif cid == '2930':
+        return '../res/character_11199_t1.png'
+    elif cid == '3380':
+        return '../res/character_11333_t1.png'
+    elif cid == '3381':
+        return '../res/KDugejE.png'
+    elif cid == '3382':
+        return '../res/character_11615_t1.png'
+    elif cid == '3383':
+        return '../res/character_11760_t.png'
+    elif cid == '3384':
+        return '../res/character_11400_t1.png'
+    elif cid == '3385':
+        return '../res/character_11338_t1.png'
+    # //elif cid == '2909':
+    #     return  '../res/character_11173_t1.png'
+    # //elif cid == '3370':
+    #     return  '../res/character_10891_t1.png'
+    # //elif cid == '2440':
+    #     return  '../res/character_10643_t1.png'
+    # //elif cid == '2441':
+    #     return  '../res/character_10644_t1.png'
+    elif cid == '5000':
         return '../res/character_10185_t1.png'
-    elif cid ==  '5001': 
+    elif cid == '5001':
         return '../res/character_10186_t1.png'
-    elif cid ==  '5002': 
+    elif cid == '5002':
         return '../res/character_10187_t1_int.png'
-    elif cid ==  '5003': 
+    elif cid == '5003':
         return '../res/character_10187_t1_psy.png'
-    elif cid ==  '5004': 
+    elif cid == '5004':
         return '../res/character_10173_t1.png'
-    elif cid ==  '5005': 
+    elif cid == '5005':
         return '../res/character_10174_t1.png'
-    elif cid ==  '5006': 
+    elif cid == '5006':
         return '../res/character_10177_t1_qck.png'
-    elif cid ==  '5007': 
+    elif cid == '5007':
         return '../res/character_10177_t1_str.png'
-    elif cid ==  '5008': 
+    elif cid == '5008':
         return '../res/character_10175_t1.png'
-    elif cid ==  '5009': 
+    elif cid == '5009':
         return '../res/character_10176_t1.png'
-    elif cid ==  '5010': 
+    elif cid == '5010':
         return '../res/character_10178_t1_qck.png'
-    elif cid ==  '5011': 
+    elif cid == '5011':
         return '../res/character_10178_t1_str.png'
-    elif cid ==  '5012': 
+    elif cid == '5012':
         return '../res/character_10181_t1.png'
-    elif cid ==  '5013': 
+    elif cid == '5013':
         return '../res/character_10182_t1.png'
-    elif cid ==  '5014': 
+    elif cid == '5014':
         return '../res/character_10183_t1_psy.png'
-    elif cid ==  '5015': 
+    elif cid == '5015':
         return '../res/character_10183_t1_dex.png'
-    elif cid ==  '5016': 
+    elif cid == '5016':
         return '../res/character_10344_t1.png'
-    elif cid ==  '5017': 
+    elif cid == '5017':
         return '../res/character_10345_t1.png'
-    elif cid ==  '5018': 
+    elif cid == '5018':
         return '../res/character_10348_t1_psy.png'
-    elif cid ==  '5019': 
+    elif cid == '5019':
         return '../res/character_10348_t1_int.png'
-    elif cid ==  '5020': 
+    elif cid == '5020':
         return '../res/character_10346_t1.png'
-    elif cid ==  '5021': 
+    elif cid == '5021':
         return '../res/character_10347_t1.png'
-    elif cid ==  '5022': 
+    elif cid == '5022':
         return '../res/character_10349_t1_psy.png'
-    elif cid ==  '5023': 
+    elif cid == '5023':
         return '../res/character_10349_t1_int.png'
-    elif cid ==  '5024': 
+    elif cid == '5024':
         return '../res/character_10496_t1.png'
-    elif cid ==  '5025': 
+    elif cid == '5025':
         return '../res/character_10497_t1.png'
-    elif cid ==  '5026': 
+    elif cid == '5026':
         return '../res/character_10498_t1_dex.png'
-    elif cid ==  '5027': 
+    elif cid == '5027':
         return '../res/character_10498_t1_str.png'
-    elif cid ==  '5028': 
+    elif cid == '5028':
         return '../res/character_10636_t1.png'
-    elif cid ==  '5029': 
+    elif cid == '5029':
         return '../res/character_10637_t1.png'
-    elif cid ==  '5030': 
+    elif cid == '5030':
         return '../res/character_10640_t1_int.png'
-    elif cid ==  '5031': 
+    elif cid == '5031':
         return '../res/character_10640_t1_dex.png'
-    elif cid ==  '5032': 
+    elif cid == '5032':
         return '../res/character_10638_t1.png'
-    elif cid ==  '5033': 
+    elif cid == '5033':
         return '../res/character_10639_t1.png'
-    elif cid ==  '5034': 
+    elif cid == '5034':
         return '../res/character_10641_t1_int.png'
-    elif cid ==  '5035': 
+    elif cid == '5035':
         return '../res/character_10641_t1_dex.png'
-    elif cid ==  '5036': 
+    elif cid == '5036':
         return '../res/character_10649_t1.png'
-    elif cid ==  '5037': 
+    elif cid == '5037':
         return '../res/character_10650_t1.png'
-    elif cid ==  '5038': 
+    elif cid == '5038':
         return '../res/character_10653_t1_dex.png'
-    elif cid ==  '5039': 
+    elif cid == '5039':
         return '../res/character_10653_t1_qck.png'
-    elif cid ==  '5040': 
+    elif cid == '5040':
         return '../res/character_10651_t1.png'
-    elif cid ==  '5041': 
+    elif cid == '5041':
         return '../res/character_10652_t1.png'
-    elif cid ==  '5042': 
+    elif cid == '5042':
         return '../res/character_10654_t1_dex.png'
-    elif cid ==  '5043': 
+    elif cid == '5043':
         return '../res/character_10654_t1_qck.png'
-    elif cid == '2818':
-        return '../res/character_10707_t1.png'
-    elif cid == '2819':
-        return '../res/character_10708_t1.png'
-    elif cid ==  '5044': 
+    # //elif cid == '2818':
+    #     return  '../res/character_10707_t1.png'
+    # //elif cid == '2819':
+    #     return  '../res/character_10708_t1.png'
+    elif cid == '5044':
         return '../res/character_10703_t.png'
-    elif cid ==  '5045': 
+    elif cid == '5045':
         return '../res/character_10704_t.png'
-    elif cid ==  '5046': 
+    elif cid == '5046':
         return '../res/character_10707_t1_qck.png'
-    elif cid ==  '5047': 
+    elif cid == '5047':
         return '../res/character_10707_t1_int.png'
-    elif cid ==  '5048': 
+    elif cid == '5048':
         return '../res/character_10705_t.png'
-    elif cid ==  '5049': 
+    elif cid == '5049':
         return '../res/character_10706_t.png'
-    elif cid ==  '5050': 
+    elif cid == '5050':
         return '../res/character_10708_t1_qck.png'
-    elif cid ==  '5051': 
+    elif cid == '5051':
         return '../res/character_10708_t1_int.png'
-    elif cid ==  '5052': 
+    elif cid == '5052':
         return '../res/character_10720_t1.png'
-    elif cid ==  '5053': 
+    elif cid == '5053':
         return '../res/character_10721_t1.png'
-    elif cid ==  '5054': 
+    elif cid == '5054':
         return '../res/character_10724_t1_psy.png'
-    elif cid ==  '5055': 
+    elif cid == '5055':
         return '../res/character_10722_t1.png'
-    elif cid ==  '5056': 
+    elif cid == '5056':
         return '../res/character_10723_t1.png'
-    elif cid ==  '5057': 
+    elif cid == '5057':
         return '../res/character_10725_t1_psy.png'
-    elif cid ==  '5058': 
+    elif cid == '5058':
         return '../res/character_10735_t1.png'
-    elif cid ==  '5059': 
+    elif cid == '5059':
         return '../res/character_10736_t1.png'
-    elif cid ==  '5060': 
+    elif cid == '5060':
         return '../res/character_10739_t1_psy.png'
-    elif cid ==  '5061': 
+    elif cid == '5061':
         return '../res/character_10739_t1_qck.png'
-    elif cid ==  '5062': 
+    elif cid == '5062':
         return '../res/character_10737_t1.png'
-    elif cid ==  '5063': 
+    elif cid == '5063':
         return '../res/character_10738_t1.png'
-    elif cid ==  '5064': 
+    elif cid == '5064':
         return '../res/character_10740_t1_psy.png'
-    elif cid ==  '5065': 
+    elif cid == '5065':
         return '../res/character_10740_t1_qck.png'
-    elif cid ==  '5066': 
+    elif cid == '5066':
         return '../res/character_10832_t1.png'
-    elif cid ==  '5067': 
+    elif cid == '5067':
         return '../res/character_10833_t1.png'
-    elif cid ==  '5068': 
+    elif cid == '5068':
         return '../res/character_10836_t1_int.png'
-    elif cid ==  '5069': 
+    elif cid == '5069':
         return '../res/character_10836_t1_qck.png'
-    elif cid ==  '5070': 
+    elif cid == '5070':
         return '../res/character_10834_t1.png'
-    elif cid ==  '5071': 
+    elif cid == '5071':
         return '../res/character_10835_t1.png'
-    elif cid ==  '5072': 
+    elif cid == '5072':
         return '../res/character_10837_t1_int.png'
-    elif cid ==  '5073': 
+    elif cid == '5073':
         return '../res/character_10837_t1_qck.png'
-    elif cid ==  '5074': 
+    elif cid == '5074':
         return '../res/character_10950_t1.png'
-    elif cid ==  '5075': 
+    elif cid == '5075':
         return '../res/character_10951_t1.png'
-    elif cid ==  '5076': 
+    elif cid == '5076':
         return '../res/character_10952_t1_dex.png'
-    elif cid ==  '5077': 
+    elif cid == '5077':
         return '../res/character_10952_t1_qck.png'
-    elif cid ==  '5078': 
+    elif cid == '5078':
         return '../res/character_10773_t1.png'
-    elif cid ==  '5079': 
+    elif cid == '5079':
         return '../res/character_10774_t1.png'
-    elif cid ==  '5080': 
+    elif cid == '5080':
         return '../res/character_10775_t1_int.png'
-    elif cid ==  '5081': 
+    elif cid == '5081':
         return '../res/character_10775_t1_qck.png'
-    elif cid ==  '5082': 
+    elif cid == '5082':
         return '../res/character_10784_t1.png'
-    elif cid ==  '5083': 
+    elif cid == '5083':
         return '../res/character_10785_t1.png'
-    elif cid ==  '5084': 
+    elif cid == '5084':
         return '../res/character_10788_t1_dex.png'
-    elif cid ==  '5085': 
+    elif cid == '5085':
         return '../res/character_10788_t1_qck.png'
-    elif cid ==  '5086': 
+    elif cid == '5086':
         return '../res/character_10786_t1.png'
-    elif cid ==  '5087': 
+    elif cid == '5087':
         return '../res/character_10787_t1.png'
-    elif cid ==  '5088': 
+    elif cid == '5088':
         return '../res/character_10789_t1_dex.png'
-    elif cid ==  '5089': 
+    elif cid == '5089':
         return '../res/character_10789_t1_qck.png'
-    elif cid ==  '5090': 
+    elif cid == '5090':
         return '../res/character_10816_t1.png'
-    elif cid ==  '5091': 
+    elif cid == '5091':
         return '../res/character_10817_t1.png'
-    elif cid ==  '5092': 
+    elif cid == '5092':
         return '../res/character_10820_t1_int.png'
-    elif cid ==  '5093': 
+    elif cid == '5093':
         return '../res/character_10818_t1.png'
-    elif cid ==  '5094': 
+    elif cid == '5094':
         return '../res/character_10819_t1.png'
-    elif cid ==  '5095': 
+    elif cid == '5095':
         return '../res/character_10821_t1_int.png'
-    elif cid ==  '5096': 
+    elif cid == '5096':
         return '../res/character_10871_t1.png'
-    elif cid ==  '5097': 
+    elif cid == '5097':
         return '../res/character_10872_t1.png'
-    elif cid ==  '5098': 
+    elif cid == '5098':
         return '../res/character_10875_t1_str.png'
-    elif cid ==  '5099': 
+    elif cid == '5099':
         return '../res/character_10875_t1_dex.png'
-    elif cid ==  '5100': 
+    elif cid == '5100':
         return '../res/character_10873_t1.png'
-    elif cid ==  '5101': 
+    elif cid == '5101':
         return '../res/character_10874_t1.png'
-    elif cid ==  '5102': 
+    elif cid == '5102':
         return '../res/character_10876_t1_str.png'
-    elif cid ==  '5103': 
+    elif cid == '5103':
         return '../res/character_10876_t1_dex.png'
-    elif cid ==  '5104': 
+    elif cid == '5104':
         return '../res/character_10877_t1.png'
-    elif cid ==  '5105': 
+    elif cid == '5105':
         return '../res/character_10878_t1.png'
-    elif cid ==  '5106': 
+    elif cid == '5106':
         return '../res/character_10881_t1_psy.png'
-    elif cid ==  '5107': 
+    elif cid == '5107':
         return '../res/character_10881_t1_str.png'
-    elif cid ==  '5108': 
+    elif cid == '5108':
         return '../res/character_10879_t1.png'
-    elif cid ==  '5109': 
+    elif cid == '5109':
         return '../res/character_10880_t1.png'
-    elif cid ==  '5110': 
+    elif cid == '5110':
         return '../res/character_10882_t1_psy.png'
-    elif cid ==  '5111': 
+    elif cid == '5111':
         return '../res/character_10882_t1_str.png'
-    elif cid ==  '5112': 
+    elif cid == '5112':
         return '../res/character_10883_t1.png'
-    elif cid ==  '5113': 
+    elif cid == '5113':
         return '../res/character_10884_t1.png'
-    elif cid ==  '5114': 
+    elif cid == '5114':
         return '../res/character_10887_t1_qck.png'
-    elif cid ==  '5115': 
+    elif cid == '5115':
         return '../res/character_10887_t1_psy.png'
-    elif cid ==  '5116': 
+    elif cid == '5116':
         return '../res/character_10885_t1.png'
-    elif cid ==  '5117': 
+    elif cid == '5117':
         return '../res/character_10886_t1.png'
-    elif cid ==  '5118': 
+    elif cid == '5118':
         return '../res/character_10888_t1_qck.png'
-    elif cid ==  '5119': 
+    elif cid == '5119':
         return '../res/character_10888_t1_psy.png'
-    elif cid ==  '5120': 
+    elif cid == '5120':
         return '../res/character_10826_t1.png'
-    elif cid ==  '5121': 
+    elif cid == '5121':
         return '../res/character_10827_t1.png'
-    elif cid ==  '5122': 
+    elif cid == '5122':
         return '../res/character_10830_t1_dex.png'
-    elif cid ==  '5123': 
+    elif cid == '5123':
         return '../res/character_10830_t1_int.png'
-    elif cid ==  '5124': 
+    elif cid == '5124':
         return '../res/character_10828_t1.png'
-    elif cid ==  '5125': 
+    elif cid == '5125':
         return '../res/character_10829_t1.png'
-    elif cid ==  '5126': 
+    elif cid == '5126':
         return '../res/character_10831_t1_dex.png'
-    elif cid ==  '5127': 
+    elif cid == '5127':
         return '../res/character_10831_t1_int.png'
-    elif cid ==  '5128': 
+    elif cid == '5128':
         return '../res/character_10778_t1.png'
-    elif cid ==  '5129': 
+    elif cid == '5129':
         return '../res/character_10779_t1.png'
-    elif cid ==  '5130': 
+    elif cid == '5130':
         return '../res/character_10782_t1_str.png'
-    elif cid ==  '5131': 
+    elif cid == '5131':
         return '../res/character_10782_t1_dex.png'
-    elif cid ==  '5132': 
+    elif cid == '5132':
         return '../res/character_10780_t1.png'
-    elif cid ==  '5133': 
+    elif cid == '5133':
         return '../res/character_10781_t1.png'
-    elif cid ==  '5134': 
+    elif cid == '5134':
         return '../res/character_10783_t1_str.png'
-    elif cid ==  '5135': 
+    elif cid == '5135':
         return '../res/character_10783_t1_dex.png'
-    elif cid ==  '5136': 
+    elif cid == '5136':
         return '../res/character_10895_t1.png'
-    elif cid ==  '5137': 
+    elif cid == '5137':
         return '../res/character_10896_t1.png'
-    elif cid ==  '5138': 
+    elif cid == '5138':
         return '../res/character_10899_t1_int.png'
-    elif cid ==  '5139': 
+    elif cid == '5139':
         return '../res/character_10899_t1_dex.png'
-    elif cid ==  '5140': 
+    elif cid == '5140':
         return '../res/character_10897_t1.png'
-    elif cid ==  '5141': 
+    elif cid == '5141':
         return '../res/character_10898_t1.png'
-    elif cid ==  '5142': 
+    elif cid == '5142':
         return '../res/character_10900_t1_int.png'
-    elif cid ==  '5143': 
+    elif cid == '5143':
         return '../res/character_10900_t1_dex.png'
-    elif cid ==  '5144': 
+    elif cid == '5144':
         return '../res/character_10910_t1.png'
-    elif cid ==  '5145': 
+    elif cid == '5145':
         return '../res/character_10911_t1.png'
-    elif cid ==  '5146': 
+    elif cid == '5146':
         return '../res/character_10914_t1_str.png'
-    elif cid ==  '5147': 
+    elif cid == '5147':
         return '../res/character_10914_t1_int.png'
-    elif cid ==  '5148': 
+    elif cid == '5148':
         return '../res/character_10912_t1.png'
-    elif cid ==  '5149': 
+    elif cid == '5149':
         return '../res/character_10913_t1.png'
-    elif cid ==  '5150': 
+    elif cid == '5150':
         return '../res/character_10915_t1_str.png'
-    elif cid ==  '5151': 
+    elif cid == '5151':
         return '../res/character_10915_t1_int.png'
-    elif cid ==  '5152': 
+    elif cid == '5152':
         return '../res/character_10916_t1.png'
-    elif cid ==  '5153': 
+    elif cid == '5153':
         return '../res/character_10917_t1.png'
-    elif cid ==  '5154': 
+    elif cid == '5154':
         return '../res/character_10920_t1_str.png'
-    elif cid ==  '5155': 
+    elif cid == '5155':
         return '../res/character_10920_t1_psy.png'
-    elif cid ==  '5156': 
+    elif cid == '5156':
         return '../res/character_10918_t1.png'
-    elif cid ==  '5157': 
+    elif cid == '5157':
         return '../res/character_10919_t1.png'
-    elif cid ==  '5158': 
+    elif cid == '5158':
         return '../res/character_10921_t1_str.png'
-    elif cid ==  '5159': 
+    elif cid == '5159':
         return '../res/character_10921_t1_psy.png'
-    elif cid ==  '5160': 
+    elif cid == '5160':
         return '../res/character_10954_t1.png'
-    elif cid ==  '5161': 
+    elif cid == '5161':
         return '../res/character_10955_t1.png'
-    elif cid ==  '5162': 
+    elif cid == '5162':
         return '../res/character_10958_t1_dex.png'
-    elif cid ==  '5163': 
+    elif cid == '5163':
         return '../res/character_10958_t1_str.png'
-    elif cid ==  '5164': 
+    elif cid == '5164':
         return '../res/character_10956_t1.png'
-    elif cid ==  '5165': 
+    elif cid == '5165':
         return '../res/character_10957_t1.png'
-    elif cid ==  '5166': 
+    elif cid == '5166':
         return '../res/character_10959_t1_dex.png'
-    elif cid ==  '5167': 
+    elif cid == '5167':
         return '../res/character_10959_t1_str.png'
-    elif cid ==  '5168': 
+    elif cid == '5168':
         return '../res/character_10960_t1.png'
-    elif cid ==  '5169': 
+    elif cid == '5169':
         return '../res/character_10961_t1.png'
-    elif cid ==  '5170': 
+    elif cid == '5170':
         return '../res/character_10964_t1_int.png'
-    elif cid ==  '5171': 
+    elif cid == '5171':
         return '../res/character_10964_t1_psy.png'
-    elif cid ==  '5172': 
+    elif cid == '5172':
         return '../res/character_10962_t1.png'
-    elif cid ==  '5173': 
+    elif cid == '5173':
         return '../res/character_10963_t1.png'
-    elif cid ==  '5174': 
+    elif cid == '5174':
         return '../res/character_10965_t1_int.png'
-    elif cid ==  '5175': 
+    elif cid == '5175':
         return '../res/character_10965_t1_psy.png'
-    elif cid ==  '5176': 
+    elif cid == '5176':
         return '../res/character_10803_t1.png'
-    elif cid ==  '5177': 
+    elif cid == '5177':
         return '../res/character_10804_t1.png'
-    elif cid ==  '5178': 
+    elif cid == '5178':
         return '../res/character_10805_t1_str.png'
-    elif cid ==  '5179': 
+    elif cid == '5179':
         return '../res/character_10805_t1_int.png'
-    elif cid ==  '5180': 
+    elif cid == '5180':
         return '../res/character_10889_t1.png'
-    elif cid ==  '5181': 
+    elif cid == '5181':
         return '../res/character_10890_t1.png'
-    elif cid ==  '5182': 
+    elif cid == '5182':
         return '../res/character_10891_t1_dex.png'
-    elif cid ==  '5183': 
+    elif cid == '5183':
         return '../res/character_10891_t1_qck.png'
-    elif cid ==  '5184': 
+    elif cid == '5184':
         return '../res/character_11099_t1.png'
-    elif cid ==  '5185': 
+    elif cid == '5185':
         return '../res/character_11100_t1.png'
-    elif cid ==  '5186': 
+    elif cid == '5186':
         return '../res/character_11102_t1_qck.png'
-    elif cid ==  '5187': 
+    elif cid == '5187':
         return '../res/character_11166_t1.png'
-    elif cid ==  '5188': 
+    elif cid == '5188':
         return '../res/character_11167_t1.png'
-    elif cid ==  '5189': 
+    elif cid == '5189':
         return '../res/character_11168_t1_psy.png'
-    elif cid ==  '5190': 
+    elif cid == '5190':
         return '../res/character_11168_t1_int.png'
-    elif cid ==  '5191': 
+    elif cid == '5191':
         return '../res/character_11187_t1.png'
-    elif cid ==  '5192': 
+    elif cid == '5192':
         return '../res/character_11188_t1.png'
-    elif cid ==  '5193': 
+    elif cid == '5193':
         return '../res/character_11191_t1_str.png'
-    elif cid ==  '5194': 
+    elif cid == '5194':
         return '../res/character_11191_t1_dex.png'
-    elif cid ==  '5195': 
+    elif cid == '5195':
         return '../res/character_11189_t1.png'
-    elif cid ==  '5196': 
+    elif cid == '5196':
         return '../res/character_11190_t1.png'
-    elif cid ==  '5197': 
+    elif cid == '5197':
         return '../res/character_11192_t1_str.png'
-    elif cid ==  '5198': 
+    elif cid == '5198':
         return '../res/character_11192_t1_dex.png'
-    elif cid ==  '5199': 
+    elif cid == '5199':
         return '../res/character_11129_t1.png'
-    elif cid ==  '5200': 
+    elif cid == '5200':
         return '../res/character_11130_t1.png'
-    elif cid ==  '5201': 
+    elif cid == '5201':
         return '../res/character_11131_t1_str.png'
-    elif cid ==  '5202': 
+    elif cid == '5202':
         return '../res/character_11227_t1.png'
-    elif cid ==  '5203': 
+    elif cid == '5203':
         return '../res/character_11228_t1.png'
-    elif cid ==  '5204': 
+    elif cid == '5204':
         return '../res/character_11231_t1_dex.png'
-    elif cid ==  '5205': 
+    elif cid == '5205':
         return '../res/character_11231_t1_int.png'
-    elif cid ==  '5206': 
+    elif cid == '5206':
         return '../res/character_11229_t1.png'
-    elif cid ==  '5207': 
+    elif cid == '5207':
         return '../res/character_11230_t1.png'
-    elif cid ==  '5208': 
+    elif cid == '5208':
         return '../res/character_11232_t1_dex.png'
-    elif cid ==  '5209': 
+    elif cid == '5209':
         return '../res/character_11232_t1_int.png'
-    elif cid ==  '5210': 
+    elif cid == '5210':
         return '../res/character_11260_t1.png'
-    elif cid ==  '5211': 
+    elif cid == '5211':
         return '../res/character_11261_t1.png'
-    elif cid ==  '5212': 
+    elif cid == '5212':
         return '../res/character_11262_t1_dex.png'
-    elif cid ==  '5213': 
+    elif cid == '5213':
         return '../res/character_11262_t1_int.png'
-    elif cid ==  '5214': 
+    elif cid == '5214':
         return '../res/character_11254_t1.png'
-    elif cid ==  '5215': 
+    elif cid == '5215':
         return '../res/character_11255_t1.png'
-    elif cid ==  '5216': 
+    elif cid == '5216':
         return '../res/character_11258_t1_str.png'
-    elif cid ==  '5217': 
+    elif cid == '5217':
         return '../res/character_11256_t1.png'
-    elif cid ==  '5218': 
+    elif cid == '5218':
         return '../res/character_11257_t1.png'
-    elif cid ==  '5219': 
+    elif cid == '5219':
         return '../res/character_11259_t1_str.png'
-    elif cid ==  '5220': 
+    elif cid == '5220':
         return '../res/character_11306_t1.png'
-    elif cid ==  '5221': 
+    elif cid == '5221':
         return '../res/character_11307_t1.png'
-    elif cid ==  '5222': 
+    elif cid == '5222':
         return '../res/character_11310_t1_psy.png'
-    elif cid ==  '5223': 
+    elif cid == '5223':
         return '../res/character_11310_t1_qck.png'
-    elif cid ==  '5224': 
+    elif cid == '5224':
         return '../res/character_11308_t1.png'
-    elif cid ==  '5225': 
+    elif cid == '5225':
         return '../res/character_11309_t1.png'
-    elif cid ==  '5226': 
+    elif cid == '5226':
         return '../res/character_11311_t1_psy.png'
-    elif cid ==  '5227': 
+    elif cid == '5227':
         return '../res/character_11311_t1_qck.png'
-    elif cid ==  '5228': 
+    elif cid == '5228':
         return '../res/character_11318_t1.png'
-    elif cid ==  '5229': 
+    elif cid == '5229':
         return '../res/character_11319_t1.png'
-    elif cid ==  '5230': 
+    elif cid == '5230':
         return '../res/character_11322_t1_str.png'
-    elif cid ==  '5231': 
+    elif cid == '5231':
         return '../res/character_11322_t1_qck.png'
-    elif cid ==  '5232': 
+    elif cid == '5232':
         return '../res/character_11320_t1.png'
-    elif cid ==  '5233': 
+    elif cid == '5233':
         return '../res/character_11321_t1.png'
-    elif cid ==  '5234': 
+    elif cid == '5234':
         return '../res/character_11323_t1_str.png'
-    elif cid ==  '5235': 
+    elif cid == '5235':
         return '../res/character_11323_t1_qck.png'
-    elif cid ==  '5236': 
+    elif cid == '5236':
         return '../res/character_11324_t1.png'
-    elif cid ==  '5237': 
+    elif cid == '5237':
         return '../res/character_11325_t1.png'
-    elif cid ==  '5238': 
+    elif cid == '5238':
         return '../res/character_11328_t1_qck.png'
-    elif cid ==  '5239': 
+    elif cid == '5239':
         return '../res/character_11328_t1_dex.png'
-    elif cid ==  '5240': 
+    elif cid == '5240':
         return '../res/character_11326_t1.png'
-    elif cid ==  '5241': 
+    elif cid == '5241':
         return '../res/character_11327_t1.png'
-    elif cid ==  '5242': 
+    elif cid == '5242':
         return '../res/character_11329_t1_qck.png'
-    elif cid ==  '5243': 
+    elif cid == '5243':
         return '../res/character_11329_t1_dex.png'
-    elif cid ==  '5244': 
+    elif cid == '5244':
         return '../res/character_11314_t1.png'
-    elif cid ==  '5245': 
+    elif cid == '5245':
         return '../res/character_11315_t1.png'
-    elif cid ==  '5246': 
+    elif cid == '5246':
         return '../res/character_11317_t1_int.png'
-    elif cid ==  '5247': 
+    elif cid == '5247':
         return '../res/character_11371_t1.png'
-    elif cid ==  '5248': 
+    elif cid == '5248':
         return '../res/character_11372_t1.png'
-    elif cid ==  '5249': 
+    elif cid == '5249':
         return '../res/character_11375_t1_str.png'
-    elif cid ==  '5250': 
+    elif cid == '5250':
         return '../res/character_11375_t1_psy.png'
-    elif cid ==  '5251': 
+    elif cid == '5251':
         return '../res/character_11373_t1.png'
-    elif cid ==  '5252': 
+    elif cid == '5252':
         return '../res/character_11374_t1.png'
-    elif cid ==  '5253': 
+    elif cid == '5253':
         return '../res/character_11376_t1_str.png'
-    elif cid ==  '5254': 
+    elif cid == '5254':
         return '../res/character_11376_t1_psy.png'
-    elif cid ==  '5255': 
+    elif cid == '5255':
         return '../res/smuAu7N.png'
-    elif cid ==  '5256': 
+    elif cid == '5256':
         return '../res/ZPSk7PQ.png'
-    elif cid ==  '5257': 
+    elif cid == '5257':
         return '../res/KDugejE_qck.png'
-    elif cid ==  '5258': 
+    elif cid == '5258':
         return '../res/KDugejE_int.png'
-    elif cid ==  '5259': 
+    elif cid == '5259':
         return '../res/character_11532_t1.png'
-    elif cid ==  '5260': 
+    elif cid == '5260':
         return '../res/character_11533_t1.png'
-    elif cid ==  '5261': 
+    elif cid == '5261':
         return '../res/character_11534_t1_psy.png'
-    elif cid ==  '5262': 
+    elif cid == '5262':
         return '../res/character_11534_t1_int.png'
-    elif cid ==  '5263': 
+    elif cid == '5263':
         return '../res/character_11661_t1.png'
-    elif cid ==  '5264': 
+    elif cid == '5264':
         return '../res/character_11660_t1.png'
-    elif cid ==  '5265': 
+    elif cid == '5265':
         return '../res/character_11662_t1_dex.png'
-    elif cid ==  '5266': 
+    elif cid == '5266':
         return '../res/character_11662_t1_psy.png'
-    elif cid ==  '5267': 
+    elif cid == '5267':
         return '../res/character_11582_t1.png'
-    elif cid ==  '5268': 
+    elif cid == '5268':
         return '../res/character_11583_t1.png'
-    elif cid ==  '5269': 
+    elif cid == '5269':
         return '../res/character_11586_t1_str.png'
-    elif cid ==  '5270': 
+    elif cid == '5270':
         return '../res/character_11586_t1_psy.png'
-    elif cid ==  '5271': 
+    elif cid == '5271':
         return '../res/character_11584_t1.png'
-    elif cid ==  '5272': 
+    elif cid == '5272':
         return '../res/character_11585_t1.png'
-    elif cid ==  '5273': 
+    elif cid == '5273':
         return '../res/character_11587_t1_str.png'
-    elif cid ==  '5274': 
+    elif cid == '5274':
         return '../res/character_11587_t1_psy.png'
-
-    else:
-        return 'https://onepiece-treasurecruise.com/wp-content/uploads/f' + cid + '.png';
+    elif cid == '5275':
+        return '../res/character_11712_t1.png'
+    elif cid == '5276':
+        return '../res/character_11713_t1.png'
+    elif cid == '5277':
+        return '../res/character_11714_t1_str.png'
+    elif cid == '5278':
+        return '../res/character_11714_t1_psy.png'
+    return 'https://onepiece-treasurecruise.com/wp-content/uploads/f' + cid + '.png'
 
 
 def generate_id(idx: int) -> str:
@@ -713,9 +909,11 @@ def download_portrait(p: Tuple[str, str], out_path: Path):
 
 
 @click.command()
-@click.option('--units', type=click.Path(file_okay=True, exists=True), 
+@click.option('--units',
+              type=click.Path(file_okay=True, exists=True),
               default='data/units.json')
-@click.option('--output', type=click.Path(file_okay=False), 
+@click.option('--output',
+              type=click.Path(file_okay=False),
               default='data/Portrait')
 def main(units: str, output: str):
     """Download all characters portraits
@@ -725,19 +923,20 @@ def main(units: str, output: str):
 
     units = json.load(open(units))
     units = [viable_unit(o) for o in units]
-    portraits_urls = [(i, get_portrait_url(generate_id(i))) 
-                      for i, u in enumerate(units, start=1) if u]
+    portraits_urls = [(i, get_portrait_url(generate_id(i)))
+                      for i, u in enumerate(units, start=1)
+                      if u]
 
     download_fn = functools.partial(download_portrait, out_path=output)
-    p = mp.Pool(mp.cpu_count())
     try:
-        r = list(tqdm.tqdm(p.imap(download_fn, portraits_urls), 
-                           total=len(portraits_urls)))
-        p.close()
+        thread_map(download_fn,
+                   portraits_urls,
+                   max_workers=mp.cpu_count() * 4,
+                   total=len(portraits_urls))
     except Exception as e:
         print(str(e))
     except KeyboardInterrupt:
-        print ("You cancelled the program!")
+        print("You cancelled the program!")
         p.terminate()
         p.join()
         sys.exit(1)
@@ -745,4 +944,3 @@ def main(units: str, output: str):
 
 if __name__ == "__main__":
     main()
-

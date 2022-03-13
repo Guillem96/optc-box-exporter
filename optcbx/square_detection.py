@@ -4,26 +4,25 @@ from typing import List, Optional, Union, Tuple
 import cv2
 import numpy as np
 
-
 ImageSize = Union[Tuple[int, int], int]
-DetectResults = Union[List[np.ndarray], 
-                      Tuple[List[np.ndarray], List[np.ndarray]]]
+DetectResults = Union[List[np.ndarray], Tuple[List[np.ndarray],
+                                              List[np.ndarray]]]
 
 
-def select_rgb_white_yellow(image: np.ndarray) -> np.ndarray: 
+def select_rgb_white_yellow(image: np.ndarray) -> np.ndarray:
     # white color mask
     lower = np.uint8([240, 240, 240])
     upper = np.uint8([255, 255, 255])
     white_mask = cv2.inRange(image, lower, upper)
 
     # yellow color mask
-    lower = np.uint8([150, 150,   0])
+    lower = np.uint8([150, 150, 0])
     upper = np.uint8([255, 255, 255])
     yellow_mask = cv2.inRange(image, lower, upper)
 
     # combine the mask
     mask = cv2.bitwise_or(white_mask, yellow_mask)
-    masked = cv2.bitwise_and(image, image, mask = yellow_mask)
+    masked = cv2.bitwise_and(image, image, mask=yellow_mask)
     return masked
 
 
@@ -49,12 +48,11 @@ def draw_lines(image: np.ndarray, lines: np.ndarray) -> np.ndarray:
     return image
 
 
-def detect_characters(
-        image: Union[str, np.ndarray],
-        characters_size: Optional[ImageSize] = None,
-        screen: str = 'character_box',
-        approach: str = 'smart',
-        return_rectangles: bool = False) -> DetectResults:
+def detect_characters(image: Union[str, np.ndarray],
+                      characters_size: Optional[ImageSize] = None,
+                      screen: str = 'character_box',
+                      approach: str = 'smart',
+                      return_rectangles: bool = False) -> DetectResults:
 
     if approach not in {'smart', 'gradient_based'}:
         raise ValueError("We only support 'smart' or 'gradient_based'"
@@ -62,12 +60,12 @@ def detect_characters(
 
     if screen not in {'character_box'}:
         raise ValueError("We only support character detection in {}"
-                         " and you provided {}".format({'character_box'}, 
+                         " and you provided {}".format({'character_box'},
                                                        screen))
 
     if approach == 'gradient_based':
-        return _gradient_based_approach(image, characters_size,
-                                        screen, return_rectangles)
+        return _gradient_based_approach(image, characters_size, screen,
+                                        return_rectangles)
     elif approach == 'smart':
         return _smart_approach(image, characters_size, return_rectangles)
 
@@ -115,12 +113,13 @@ def _smart_approach(image: Union[str, np.ndarray],
 
     true_mask = detections['scores'] > .5
     boxes = (detections['boxes'][true_mask].cpu() * scale).int().numpy()
-    characters = [image[y_min: y_max, x_min: x_max] 
-                  for x_min, y_min, x_max, y_max in boxes]
+    characters = [
+        image[y_min:y_max, x_min:x_max] for x_min, y_min, x_max, y_max in boxes
+    ]
 
     if characters_size is not None:
-        characters = np.array([cv2.resize(o, characters_size) 
-                               for o in characters])
+        characters = np.array(
+            [cv2.resize(o, characters_size) for o in characters])
 
     if not return_rectangles:
         return characters
@@ -148,7 +147,7 @@ def _gradient_based_approach(image: Union[str, np.ndarray],
 
     # Retrieve yellows and whites from the image
     res = select_rgb_white_yellow(image)
-    kernel = np.array([[-1,-1,-1], [-1,9,-1], [-1,-1,-1]])
+    kernel = np.array([[-1, -1, -1], [-1, 9, -1], [-1, -1, -1]])
     res = cv2.filter2D(res, -1, kernel)
 
     # Convert the image to gray scale and apply a canny edge detection
@@ -157,15 +156,19 @@ def _gradient_based_approach(image: Union[str, np.ndarray],
 
     # Based on the canny edge detection result, find straight lines in the image
     # TODO: Better understand parameters: rho and maxLineGap
-    lines = cv2.HoughLinesP(res, rho=.1, theta=np.pi/ 10., 
-                            threshold=150, minLineLength=5, maxLineGap=4)
+    lines = cv2.HoughLinesP(res,
+                            rho=.1,
+                            theta=np.pi / 10.,
+                            threshold=150,
+                            minLineLength=5,
+                            maxLineGap=4)
     lines = lines.reshape(-1, 4)
 
     # Draw completely horizontal and vertical lines and expand them to fit the
     # image, this way we can build a grid spliting all the box characters
     res = draw_lines(cv2.cvtColor(res, cv2.COLOR_GRAY2BGR), lines)
 
-    # Again convert the image to gray scale and threshold it in order to 
+    # Again convert the image to gray scale and threshold it in order to
     # binarize it
     res = cv2.cvtColor(res, cv2.COLOR_BGR2GRAY)
     res = cv2.threshold(res, 200, 255, cv2.THRESH_BINARY)[1]
@@ -190,21 +193,22 @@ def _gradient_based_approach(image: Union[str, np.ndarray],
     valid_rectangles &= (ar > .8) & (ar < 1.2)
 
     valid_rects = rects[valid_rectangles].astype('int32')
-    characters = [image[y:y+h, x:x+w] for x, y, w, h in valid_rects]
+    characters = [image[y:y + h, x:x + w] for x, y, w, h in valid_rects]
 
     if characters_size is not None:
-        characters = np.array([cv2.resize(o, characters_size) 
-                               for o in characters])
+        characters = np.array(
+            [cv2.resize(o, characters_size) for o in characters])
 
         if screen == 'character_box':
-            # We assume a multiple of 5 characters found 
+            # We assume a multiple of 5 characters found
             # (for example: 5, 10, 15,...)
 
             pad = characters.shape[0] % 5
             if pad > 0:
                 pad = 5 - pad
-                characters = np.pad(characters, ((0, pad), (0, 0), (0, 0), (0, 0)))
-                valid_rects = np.pad(valid_rects, ((0, pad), (0, 0)), 
+                characters = np.pad(characters,
+                                    ((0, pad), (0, 0), (0, 0), (0, 0)))
+                valid_rects = np.pad(valid_rects, ((0, pad), (0, 0)),
                                      constant_values=9999)
 
             sort_by_y_idx = np.argsort(valid_rects[:, 1])

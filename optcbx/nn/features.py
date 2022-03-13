@@ -14,27 +14,29 @@ def get_feature_vector(model, images, average_multiple: int = 1):
         return out.view(im.size(0), -1).cpu()
 
     def get_features():
-        return torch.cat([call_model(o)
-                          for o in tqdm.tqdm(dl, total=len(dl))], 0)
+        return torch.cat([call_model(o) for o in tqdm.tqdm(dl, total=len(dl))],
+                         0)
 
     if average_multiple > 1:
-        tfm = T.Compose([T.ToPILImage(),
-                         T.Resize(256),
-                         T.RandomCrop(224),
-                         T.GaussianBlur(3),
-                         T.ToTensor(),
-                         T.Normalize(mean=[0.485, 0.456, 0.406],
-                                     std=[0.229, 0.224, 0.225])])
+        tfm = T.Compose([
+            T.ToPILImage(),
+            T.Resize(256),
+            T.RandomCrop(224),
+            T.GaussianBlur(3),
+            T.ToTensor(),
+            T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+        ])
     else:
-        tfm = T.Compose([T.ToPILImage(),
-                         T.Resize(256),
-                         T.CenterCrop(224),
-                         T.ToTensor(),
-                         T.Normalize(mean=[0.485, 0.456, 0.406],
-                                     std=[0.229, 0.224, 0.225])])
+        tfm = T.Compose([
+            T.ToPILImage(),
+            T.Resize(256),
+            T.CenterCrop(224),
+            T.ToTensor(),
+            T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+        ])
 
     bs = 16
-    ds = _OptcBxDataset([o[...,::-1] for o in images], transform=tfm)
+    ds = _OptcBxDataset([o[..., ::-1] for o in images], transform=tfm)
     dl = torch.utils.data.DataLoader(ds, batch_size=bs)
     device = list(model.parameters())[0].device
 
@@ -62,7 +64,7 @@ def load_portrait_features():
 
     if _portraits_features is None:
         import torch
-        _portraits_features = torch.load('ai/fv-portraits.pt', 
+        _portraits_features = torch.load('ai/fv-portraits.pt',
                                          map_location=torch.device('cpu'))
         _portraits_features.unsqueeze_(0)
 

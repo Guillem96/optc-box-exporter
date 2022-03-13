@@ -14,10 +14,7 @@ import psycopg2
 
 import optcbx
 
-
-app = Flask(__name__, 
-            static_folder='static', 
-            template_folder='templates')
+app = Flask(__name__, static_folder='static', template_folder='templates')
 CORS(app)
 
 result = urlparse(os.environ['DATABASE_URL'])
@@ -26,11 +23,10 @@ password = result.password
 database = result.path[1:]
 hostname = result.hostname
 
-connection = psycopg2.connect(
-    database=database,
-    user=username,
-    password=password,
-    host=hostname)
+connection = psycopg2.connect(database=database,
+                              user=username,
+                              password=password,
+                              host=hostname)
 
 
 @app.route('/')
@@ -76,8 +72,7 @@ def export():
     else:
         characters = optcbx.find_characters_from_screenshot(
             im, im_size, return_thumbnails=False)
-        response = {
-            "characters": [dict(o._asdict()) for o in characters]}
+        response = {"characters": [dict(o._asdict()) for o in characters]}
 
     return jsonify(response)
 
@@ -86,7 +81,7 @@ def _img_to_b64(im):
     im = Image.fromarray(im)
     buffered = io.BytesIO()
     im.save(buffered, format="JPEG")
-    return ("data:image/jpeg;base64," + 
+    return ("data:image/jpeg;base64," +
             base64.b64encode(buffered.getvalue()).decode())
 
 
@@ -95,4 +90,3 @@ def _random_name():
     name = ''.join([random.choice(ln) for _ in range(20)]) + '.jpg'
     path = 'data/screenshots/' + name
     return path
-

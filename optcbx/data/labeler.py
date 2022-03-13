@@ -19,17 +19,15 @@ import optcbx
 @click.argument('data-pattern')
 def main(data_pattern: str):
     """Labels new images with th gradient based approach"""
-    labelme_base_dict = {
-        "version": "4.5.6",
-        "flags": {}
-    }
+    labelme_base_dict = {"version": "4.5.6", "flags": {}}
 
     fnames = glob.glob(data_pattern)
 
     for f in tqdm.tqdm(fnames):
         f = Path(f)
         annotation_path = f.parent / (f.stem + '.json')
-        if annotation_path.exists(): continue
+        if annotation_path.exists():
+            continue
 
         im_metadata = _process_image(f)
         annotation = dict(**im_metadata, **labelme_base_dict)

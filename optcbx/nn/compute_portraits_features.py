@@ -7,7 +7,7 @@ import tqdm.auto as tqdm
 
 
 @click.command()
-@click.option('--portraits-path', 
+@click.option('--portraits-path',
               default='data/Portrait',
               type=click.Path(exists=True, file_okay=False))
 @click.option('--avg-multiple', default=3, type=int)
@@ -25,8 +25,7 @@ def main(portraits_path, avg_multiple, output):
     output.parent.mkdir(exist_ok=True, parents=True)
 
     portraits_paths = list(Path(portraits_path).glob('*.png'))
-    portraits = [cv2.imread(str(o)) 
-                 for o in tqdm.tqdm(portraits_paths)]
+    portraits = [cv2.imread(str(o)) for o in tqdm.tqdm(portraits_paths)]
 
     m = feature_extractor()
     m.to(device)

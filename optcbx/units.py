@@ -10,8 +10,11 @@ class Character(NamedTuple):
 
 
 def parse_unit(i: int, unit: List[Any]) -> Character:
-    return Character(name=unit[0], type_=unit[1], class_=unit[2],
-                     stars=unit[3], number=i)
+    return Character(name=unit[0],
+                     type_=unit[1],
+                     class_=unit[2],
+                     stars=unit[3],
+                     number=i)
 
 
 def parse_units(units: List[List[Any]]) -> List[Character]:
@@ -22,7 +25,7 @@ def parse_units(units: List[List[Any]]) -> List[Character]:
 def viable_unit(unit: str) -> List[Any]:
     if all(o is not None for o in unit):
         return unit
-    
+
     if all(unit[i] is not None for i in range(9, 15)):
         return unit
 
