@@ -1,17 +1,14 @@
-import os
-import sys
-import json
-import shutil
-import requests
 import functools
-from pathlib import Path
+import json
 import multiprocessing as mp
+import shutil
+from pathlib import Path
 from typing import Optional, Tuple
 
 import click
-from tqdm.contrib.concurrent import thread_map
-
+import requests
 from optcbx.units import viable_unit
+from tqdm.contrib.concurrent import thread_map
 
 
 def get_portrait_url(cid: Optional[str]) -> str:
@@ -924,8 +921,13 @@ def main(units: str, output: str):
     units = json.load(open(units))
     units = [viable_unit(o) for o in units]
     portraits_urls = [(i, get_portrait_url(generate_id(i)))
-                      for i, u in enumerate(units, start=1)
-                      if u]
+                      for i, u in enumerate(units, start=1) if u]
+    total_portraits = len(portraits_urls)
+    portraits_urls = [(i, url) for i, url in portraits_urls
+                      if not (output / f"{i}.png").exists()]
+    already_exits_portraits = total_portraits - len(portraits_urls)
+    if already_exits_portraits:
+        print(f"Skipping {already_exits_portraits} because already exists...")
 
     download_fn = functools.partial(download_portrait, out_path=output)
     try:
@@ -937,9 +939,6 @@ def main(units: str, output: str):
         print(str(e))
     except KeyboardInterrupt:
         print("You cancelled the program!")
-        p.terminate()
-        p.join()
-        sys.exit(1)
 
 
 if __name__ == "__main__":

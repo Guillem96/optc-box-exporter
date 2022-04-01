@@ -1,8 +1,8 @@
-import yaml
-from typing import List, Optional, Union, Tuple
+from typing import List, Optional, Tuple, Union
 
 import cv2
 import numpy as np
+import yaml
 
 ImageSize = Union[Tuple[int, int], int]
 DetectResults = Union[List[np.ndarray], Tuple[List[np.ndarray],
@@ -79,15 +79,15 @@ def _smart_approach(image: Union[str, np.ndarray],
                     return_rectangles: bool = False):
     global _model, _config
 
-    import torch
     import ssd
     import ssd.transforms as T
+    import torch
 
     device = torch.device('cpu')
     tfms = T.get_transforms(300, inference=True)
 
     if isinstance(characters_size, int):
-        characters_size = (characters_size,) * 2
+        characters_size = (characters_size, ) * 2
 
     if isinstance(image, str):
         image = cv2.imread(image)
@@ -124,7 +124,7 @@ def _smart_approach(image: Union[str, np.ndarray],
     if not return_rectangles:
         return characters
     else:
-        return characters, valid_rects
+        return characters, boxes
 
 
 def _gradient_based_approach(image: Union[str, np.ndarray],
@@ -133,7 +133,7 @@ def _gradient_based_approach(image: Union[str, np.ndarray],
                              return_rectangles: bool = False):
 
     if isinstance(characters_size, int):
-        characters_size = (characters_size,) * 2
+        characters_size = (characters_size, ) * 2
 
     if isinstance(image, str):
         image = cv2.imread(image)
@@ -231,6 +231,8 @@ def _gradient_based_approach(image: Union[str, np.ndarray],
     if not return_rectangles:
         return characters
     else:
+        valid_rects[..., 2] = valid_rects[..., 0] + valid_rects[..., 2]
+        valid_rects[..., 3] = valid_rects[..., 1] + valid_rects[..., 3]
         return characters, valid_rects
 
 

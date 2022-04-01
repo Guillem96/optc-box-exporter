@@ -1,18 +1,16 @@
+import base64
+import glob
 import io
 import json
-import glob
-import base64
 from pathlib import Path
 from typing import Union
-import tqdm.auto as tqdm
-
-import cv2
-import numpy as np
-from PIL import Image
 
 import click
-
+import cv2
+import numpy as np
 import optcbx
+import tqdm.auto as tqdm
+from PIL import Image
 
 
 @click.command()
@@ -38,8 +36,6 @@ def _process_image(im_path: Union[Path, str]) -> dict:
     im_path = Path(im_path)
     im = cv2.imread(str(im_path))
     _, rects = optcbx.detect_characters(im, 64, return_rectangles=True)
-    rects[..., 2] = rects[..., 0] + rects[..., 2]
-    rects[..., 3] = rects[..., 1] + rects[..., 3]
 
     im_metadata = {
         "imageHeight": im.shape[0],
