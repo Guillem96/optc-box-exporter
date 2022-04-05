@@ -15,7 +15,10 @@ from PIL import Image
 
 @click.command()
 @click.argument('data-pattern')
-def main(data_pattern: str):
+@click.option('--detection-approach',
+              type=click.Choice(["smart", "gradient_based"]),
+              default="smart")
+def main(data_pattern: str, detection_approach: str) -> None:
     """Labels new images with th gradient based approach"""
     labelme_base_dict = {"version": "4.5.6", "flags": {}}
 
@@ -27,15 +30,18 @@ def main(data_pattern: str):
         if annotation_path.exists():
             continue
 
-        im_metadata = _process_image(f)
+        im_metadata = _process_image(f, detection_approach)
         annotation = dict(**im_metadata, **labelme_base_dict)
         json.dump(annotation, annotation_path.open('w'))
 
 
-def _process_image(im_path: Union[Path, str]) -> dict:
+def _process_image(im_path: Union[Path, str], detection_approach: str) -> dict:
     im_path = Path(im_path)
     im = cv2.imread(str(im_path))
-    _, rects = optcbx.detect_characters(im, 64, return_rectangles=True)
+    _, rects = optcbx.detect_characters(im,
+                                        64,
+                                        return_rectangles=True,
+                                        approach=detection_approach)
 
     im_metadata = {
         "imageHeight": im.shape[0],
